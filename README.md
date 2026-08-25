@@ -1,15 +1,19 @@
 # DataCenter.forum
 
-Independent community and intelligence platform for the data-center industry: power, development, construction, operations, AI infrastructure, finance, policy, jobs and vendors.
+Independent practitioner community plus a B2B marketplace for the data-center industry.
 
-## What this foundation includes
+## Current foundation
 
-- Next.js 16 App Router shell with a launch-ready editorial/forum homepage.
-- Supabase/Postgres schema for profiles, categories, threads, posts, reactions and bookmarks.
-- Row Level Security for public reading plus authenticated member posting and ownership controls.
-- Seed support for house/expert accounts whose `user_id` is intentionally nullable; real members link to Supabase Auth.
-- Deterministic seed importer with 36 industry-specific starter threads staggered across working hours.
-- `/api/health` endpoint for deployment checks.
+- Next.js 16 App Router.
+- Supabase/Postgres forum schema with RLS.
+- Cold-start policy built around clearly labeled STAFF house accounts only; no fabricated members.
+- 36 practitioner questions scheduled across a four-week private-beta release.
+- Vendor marketplace with approval state, verification flags, plan tiers and consent-based lead requests.
+- Founding Partner sales page.
+- Data-center jobs marketplace and employer/recruiter intake.
+- Sponsorship sales page with permanent disclosure principles.
+- DCF Opportunities buyer-intent intake and public verified-opportunity surface.
+- `/api/health` deployment check.
 
 ## Local setup
 
@@ -19,13 +23,18 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Then open `http://localhost:3000`.
-
 ## Supabase setup
 
-1. Create a Supabase project.
-2. Run `seed/schema.sql` in the Supabase SQL editor.
-3. Add these values to `.env.local`:
+Run migrations in this order in the Supabase SQL editor:
+
+```text
+seed/schema.sql
+seed/002_seed-pack.sql
+seed/003_monetization.sql
+seed/004_commerce_intake.sql
+```
+
+Then configure:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=...
@@ -33,26 +42,39 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-Never expose `SUPABASE_SERVICE_ROLE_KEY` to the browser or commit it to Git.
+`SUPABASE_SERVICE_ROLE_KEY` must never be exposed to the browser or committed to Git.
 
-Preview the seed schedule without credentials:
+Preview the cold-start schedule:
 
 ```bash
 node seed/import-seed.mjs --dry
 ```
 
-Load the seed data after the schema exists:
+Load it after the database migrations exist:
 
 ```bash
 node seed/import-seed.mjs
 ```
 
-The importer is designed to be rerunnable: house profiles and seed threads are upserted by stable identifiers.
+## Revenue surfaces
+
+- `/vendors` — reviewed vendor marketplace and vendor application intake.
+- `/vendors/[slug]` — approved vendor profiles and consent-based buyer introductions.
+- `/partners` — Founding Partner offer; launch price is $1,500 for 90 days.
+- `/jobs` — specialist job board; $149 standard, $299 featured, $499/month recruiter unlimited.
+- `/advertise` — category sponsorships, sponsored briefings and research/data partnerships.
+- `/opportunities` — buyer needs and qualified vendor matching.
+
+The commercial rule is simple: companies may buy visibility, distribution and qualified introductions. They cannot buy favorable discussion, rankings, moderation outcomes, or private member data.
 
 ## Vercel
 
-Import this GitHub repository into Vercel, add the two public Supabase variables, and deploy. Add `SUPABASE_SERVICE_ROLE_KEY` only when a server-side operation actually requires it; the public site should not depend on that key.
+Import the GitHub repository into Vercel and add the public Supabase variables. The public read surfaces work under RLS. Intake forms insert into write-only tables. Keep service-role usage restricted to trusted seed/admin operations.
 
-## Product direction
+## Next monetization layer
 
-The forum is the acquisition and trust layer. Monetization should be added around—not inside—the core conversation experience: premium intelligence/research, verified vendor profiles, recruiting, sponsored data products, qualified project leads, and eventually structured facility/project datasets.
+1. Vendor verification/admin workflow.
+2. Stripe products, subscriptions and approved-company checkout.
+3. Sponsor/admin dashboard.
+4. Lead analytics and routing.
+5. Sponsored-content disclosure metadata on every paid content object.
