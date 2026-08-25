@@ -8,6 +8,7 @@ import {
   setVendorVerification,
   updateRevenueStatus,
 } from "./actions";
+import "./admin.css";
 
 type Row = Record<string, any>;
 
