@@ -18,7 +18,7 @@ exception when duplicate_object then null; end $$;
 create table if not exists public.profiles (
   id uuid primary key default gen_random_uuid(),
   user_id uuid unique references auth.users(id) on delete cascade,
-  username text,
+  username text unique,
   display_name text not null,
   bio text,
   avatar_url text,
