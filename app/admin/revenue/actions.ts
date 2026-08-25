@@ -19,6 +19,7 @@ export async function updateRevenueStatus(formData: FormData) {
     vendor_leads: new Set(["new", "accepted", "closed", "spam"]),
     job_posting_requests: new Set(["new", "contacted", "approved", "rejected", "published", "closed"]),
     opportunity_submissions: new Set(["new", "qualified", "matched", "rejected", "closed"]),
+    sponsored_content: new Set(["draft", "active", "paused", "ended"]),
   };
 
   if (!allowed[table]?.has(status) || !id) throw new Error("Invalid status update");
@@ -30,6 +31,7 @@ export async function updateRevenueStatus(formData: FormData) {
   const { error } = await supabase.from(table).update(patch).eq("id", id);
   if (error) throw error;
   revalidatePath("/admin/revenue");
+  if (table === "sponsored_content") revalidatePath("/");
 }
 
 export async function approveVendorApplication(formData: FormData) {
