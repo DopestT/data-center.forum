@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SponsoredSlot } from "../components/SponsoredSlot";
 
 const categories = [
   ["Power & Electrical", "Utility feed to the rack PDU. UPS, generators, switchgear, distribution and testing."],
@@ -43,6 +44,7 @@ export default function Home() {
         <div className="sectionHead"><div><span className="kicker">STAFF-OPENED DISCUSSIONS</span><h2>Questions for practitioners</h2></div></div>
         <div className="threadList">{threads.map(([category,title]) => <article className="thread" key={title}><div><span className="tag">{category}</span><h3>{title}</h3><p>Opened by DCF Desk · STAFF / Editorial</p></div><span className="activity">Members answer</span></article>)}</div>
       </section>
+      <SponsoredSlot placement="home-between-sections" />
       <section className="section intel">
         <span className="kicker">COMMERCIAL LAYER</span><h2>Useful conversation creates useful markets.</h2>
         <p>Vendors can earn verified visibility, employers can reach specialist talent, sponsors can buy clearly disclosed industry inventory, and buyers can request qualified introductions without DataCenter.forum selling private member data.</p>
