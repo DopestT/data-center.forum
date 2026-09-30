@@ -6,9 +6,11 @@ import { checkoutLinks } from "../../lib/monetization";
 
 const knownCapacityMw = projects.reduce((sum, project) => sum + (project.announced_capacity_mw ?? 0), 0);
 const enrichedProjects = Object.keys(graph).length;
+const structuredInvestmentUsd = projects.reduce((sum, project) => project.investment_basis === "local_spend_estimate" ? sum : sum + (project.investment_usd ?? 0), 0);
 
 export default function IntelligencePage() {
   const capacityLabel = knownCapacityMw >= 1000 ? `${(knownCapacityMw / 1000).toFixed(1)} GW` : `${knownCapacityMw} MW`;
+  const investmentLabel = `${(structuredInvestmentUsd / 1_000_000_000).toFixed(1)}B`;
   return (
     <main>
       <header className="topbar">
@@ -35,9 +37,10 @@ export default function IntelligencePage() {
         <div className="databaseMetrics intelligenceMetrics">
           <div><strong>{projects.length}</strong><span>canonical project records</span></div>
           <div><strong>{registry.length}</strong><span>official-source watches</span></div>
-          <div><strong>{enrichedProjects}</strong><span>relationship-enriched projects</span></div>
+          <div><strong>{investmentLabel}</strong><span>disclosed / estimated capital represented</span></div>
           <div><strong>{capacityLabel}</strong><span>known announced capacity</span></div>
         </div>
+        <p className="metricNote">{enrichedProjects} projects currently include deeper relationship/signal graphs. Investment totals exclude local-spend-only estimates; record-level scope and basis remain available in structured exports.</p>
       </section>
 
       <section className="section darkSection">
