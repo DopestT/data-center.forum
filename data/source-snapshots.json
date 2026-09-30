@@ -94,5 +94,48 @@
     "url": "https://sbenergy.com/openai-and-softbank-group-partner-with-sb-energy/",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
     "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "meta-temple": {
+    "hash": "369f51d76153d7da13802766ad1347a94d8d703c6114a57848090599a25263cb",
+    "project_slugs": [
+      "meta-temple-texas"
+    ],
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/07/temple-we-are-online/",
+    "first_seen_at": "2026-09-30T03:46:22.023Z",
+    "changed_at": "2026-09-30T03:46:22.023Z"
+  },
+  "meta-eagle-mountain-2026": {
+    "hash": "947f646cdab2bd73aa4ed8dbda530be6a24377156166eb1f91af5760875ecc05",
+    "project_slugs": [
+      "meta-eagle-mountain-utah"
+    ],
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/09/deepening-our-investment-in-eagle-mountain-utah/",
+    "first_seen_at": "2026-09-30T03:46:22.023Z",
+    "changed_at": "2026-09-30T03:46:22.023Z"
+  },
+  "aws-fayette-ohio": {
+    "hash": "328e6b3e752429c9fe89d0e96117d09df6648b4cfc9f40111c98d0072dc60c90",
+    "project_slugs": [
+      "aws-fayette-county-ohio"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio",
+    "first_seen_at": "2026-09-30T03:46:22.023Z",
+    "changed_at": "2026-09-30T03:46:22.023Z"
+  },
+  "openai-five-stargate-sites": {
+    "hash": "a625df6eaf362ec79904708236d00a5f9ba8eba318092ce45fd38d87965fc322",
+    "project_slugs": [
+      "openai-stargate-shackelford-county-texas",
+      "openai-stargate-dona-ana-county-new-mexico",
+      "openai-stargate-wisconsin-oracle-vantage",
+      "openai-stargate-lordstown-ohio"
+    ],
+    "publisher": "SoftBank Group",
+    "url": "https://group.softbank/en/news/press/20250924",
+    "first_seen_at": "2026-09-30T03:46:22.023Z",
+    "changed_at": "2026-09-30T03:46:22.023Z"
   }
 }
