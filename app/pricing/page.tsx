@@ -33,7 +33,7 @@ export default function PricingPage() {
     <main>
       <header className="topbar">
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
-        <nav><Link href="/database">Database</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
+        <nav><Link href="/database">Database</Link><Link href="/intelligence">Data</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
       </header>
 
       <section className="commerceHero">
@@ -58,6 +58,14 @@ export default function PricingPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="section compactSection">
+        <div className="sectionHead">
+          <div><span className="kicker">STRUCTURED DATA</span><h2>Need more than monitoring?</h2></div>
+          <Link href="/intelligence">See the data product →</Link>
+        </div>
+        <p className="mutedText">Custom data and research access can be scoped around markets, companies, relationships, power signals, or structured exports. The public sample shows the baseline format; full enriched exports remain part of paid delivery.</p>
       </section>
 
       <section className="section intel">
