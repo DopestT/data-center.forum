@@ -1,1 +1,98 @@
-{}
+{
+  "meta-richland": {
+    "hash": "27b190c73eb5559dfb4b1825745ef5efb000b3b4393031cac53b36cee028d657",
+    "project_slug": "meta-hyperion-richland-parish",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/07/deepening-our-investment-in-richland-parish-louisiana/",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "aws-northern-indiana": {
+    "hash": "e66e06b0b8e45b69cda81840b163cdcc4ae62d7cb1e628d7d37973a1d487271a",
+    "project_slug": "amazon-northern-indiana-2-4gw",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "openai-the-barn": {
+    "hash": "46ad44ac5d167bb3319faeff7e818aef650bbaeec7d270a516f37869eef2405c",
+    "project_slug": "openai-the-barn-saline-michigan",
+    "publisher": "Related Digital",
+    "url": "https://www.related.com/press-releases/2026-06-01/related-digital-blackstone-oracle-openai-walbridge-and-governor-whitmer",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "meta-el-paso": {
+    "hash": "de237a90c4c71b0c3788e575d43c5c14a919776954387a6c5371fea87ca55c8f",
+    "project_slug": "meta-el-paso-1gw",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/03/big-things-are-happening-el-paso/",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "meta-beaver-dam": {
+    "hash": "aa207fabfded957c92e3c9678d07c183b446369d7dabd8c81e8df078598c5759",
+    "project_slug": "meta-beaver-dam-wisconsin",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2025/11/hello-beaver-dam/",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "microsoft-mount-pleasant": {
+    "hash": "8b3c59fd8e35eb3618827733d6a8f43c7c447dae0b55343ba78161803801c6e2",
+    "project_slug": "microsoft-fairwater-mount-pleasant",
+    "publisher": "Microsoft",
+    "url": "https://news.microsoft.com/source/2026/06/23/microsoft-completes-construction-on-first-datacenter-facility-in-mount-pleasant-wisconsin/",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "aws-mississippi": {
+    "hash": "a869d3ae9d68b9949e0cbdd33e4ed1089a1ad0c9061b045f3c095e3c47a5e2f7",
+    "project_slug": "aws-madison-county-mississippi",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "aws-pennsylvania": {
+    "hash": "8d389cc3f4200d0782291b3f7f97adcec11b32b61d54d9f47fe80895e149b709",
+    "project_slug": "aws-pennsylvania-ai-campuses",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "aws-georgia": {
+    "hash": "b7213fe1865588ad8a66c1bf61e4e80a68f770efa5c288c575470a2109c2f6ce",
+    "project_slug": "aws-butts-douglas-georgia",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "aws-north-carolina": {
+    "hash": "4c29578de3e30caf75aa28c76b63ead147e8c0a64563bd78970774fa358311a7",
+    "project_slug": "aws-richmond-county-north-carolina",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "google-fort-wayne": {
+    "hash": "cf33bc5cd1f92a38e31a74bc1cacd41121eb91329fb1803c5839bbd43ed65827",
+    "project_slug": "google-fort-wayne-indiana",
+    "publisher": "Google",
+    "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-centers-ai-skills-investments/",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  },
+  "openai-milam": {
+    "hash": "1df18453510ab8ca02cb0703cb35874eb19bb584159c9c5eb8720f9c31bfbfa9",
+    "project_slug": "openai-stargate-milam-county-1-2gw",
+    "publisher": "SB Energy",
+    "url": "https://sbenergy.com/openai-and-softbank-group-partner-with-sb-energy/",
+    "first_seen_at": "2026-09-30T03:38:03.298Z",
+    "changed_at": "2026-09-30T03:38:03.298Z"
+  }
+}
