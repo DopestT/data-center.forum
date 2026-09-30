@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "intel:export": "node scripts/export-intelligence.mjs",
+    "intel:scan": "node scripts/scan-intelligence.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.5",
