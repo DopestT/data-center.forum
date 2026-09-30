@@ -29,7 +29,7 @@ function latestEvent(slug) {
 }
 
 const headers = [
-  "slug","name","company","market","region","country","stage","announced_capacity_mw","investment_label",
+  "slug","name","company","market","region","country","stage","announced_capacity_mw","investment_label","investment_usd","investment_basis","investment_scope",
   "summary","source_name","source_url","source_published_at","last_verified_at","participant_count","participants",
   "power_signals","cooling_signals","event_count","latest_event_date","latest_event_type","latest_event_headline"
 ];
@@ -39,7 +39,7 @@ const rows = projects.map((project) => {
   const event = latestEvent(project.slug);
   return [
     project.slug,project.name,project.company,project.market,project.region,project.country,project.stage,
-    project.announced_capacity_mw,project.investment_label,project.summary,project.source_name,project.source_url,
+    project.announced_capacity_mw,project.investment_label,project.investment_usd,project.investment_basis,project.investment_scope,project.summary,project.source_name,project.source_url,
     project.source_published_at,project.last_verified_at,projectGraph.participants.length,flattenParticipants(project.slug),
     flattenFacts(project.slug,"Power"),flattenFacts(project.slug,"Cooling"),projectGraph.events.length,
     event?.date ?? "",event?.type ?? "",event?.headline ?? ""
