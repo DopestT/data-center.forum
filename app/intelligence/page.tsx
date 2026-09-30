@@ -72,7 +72,7 @@ export default function IntelligencePage() {
             <span>DATA PARTNER</span><h3>Custom</h3>
             <p>Structured exports and research cuts shaped around an industry workflow.</p>
             <ul><li>Market or company cuts</li><li>Selected fields</li><li>Relationship data</li><li>Custom delivery scope</li></ul>
-            <Link href="/advertise#inquire">Discuss data access →</Link>
+            <a href={checkoutLinks.dataPartnerInquiry} target="_blank" rel="noreferrer">Request data access — no charge →</a>
           </article>
         </div>
       </section>
