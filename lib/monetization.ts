@@ -1,3 +1,8 @@
+export const checkoutLinks = {
+  pro: "https://buy.stripe.com/3cI7sL7Rp4jyad08e1dZ60a",
+  featuredCompany: "https://buy.stripe.com/14A4gz1t12bqdpc79XdZ60b"
+} as const;
+
 export const vendorCategories = [
   "Commissioning",
   "Electrical Contractors",

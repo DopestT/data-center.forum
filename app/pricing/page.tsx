@@ -1,0 +1,70 @@
+import Link from "next/link";
+import { checkoutLinks } from "../../lib/monetization";
+
+const plans = [
+  {
+    name: "Public",
+    price: "$0",
+    detail: "Use the database without a sales conversation.",
+    features: ["Search public project records", "Source trail on each record", "Project status and capacity", "Public company/vendor discovery"],
+    href: "/database",
+    cta: "Browse free"
+  },
+  {
+    name: "Pro",
+    price: "$49/mo",
+    detail: "For people who need to keep watching projects.",
+    features: ["Everything public", "Track projects", "Change alerts", "Advanced filters", "CSV export"],
+    href: checkoutLinks.pro,
+    cta: "Start Pro"
+  },
+  {
+    name: "Featured Company",
+    price: "$99/mo",
+    detail: "For vendors and operators that want stronger discovery.",
+    features: ["Enhanced company profile", "Priority placement", "Website + capability links", "Buyer discovery surfaces", "Paid placement clearly labeled"],
+    href: checkoutLinks.featuredCompany,
+    cta: "Feature company"
+  }
+];
+
+export default function PricingPage() {
+  return (
+    <main>
+      <header className="topbar">
+        <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
+        <nav><Link href="/database">Database</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
+      </header>
+
+      <section className="commerceHero">
+        <span className="kicker">SIMPLE PRICING</span>
+        <h1>Search free. Pay when the data needs to work for you.</h1>
+        <p>The first paid version is deliberately small: $49/month to monitor the database, or $99/month to make a company more discoverable.</p>
+      </section>
+
+      <section className="section darkSection">
+        <div className="pricingGrid">
+          {plans.map((plan) => (
+            <article className={`priceCard ${plan.name === "Pro" ? "featuredPrice" : ""}`} key={plan.name}>
+              <span>{plan.name}</span>
+              <h3>{plan.price}</h3>
+              <p>{plan.detail}</p>
+              <ul>{plan.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+              {plan.href.startsWith("http") ? (
+                <a className="buttonLink" href={plan.href} target="_blank" rel="noreferrer">{plan.cta}</a>
+              ) : (
+                <Link className="buttonLink" href={plan.href}>{plan.cta}</Link>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section intel">
+        <span className="kicker">COMMERCIAL RULE</span>
+        <h2>Payment buys tools or visibility. Not favorable data.</h2>
+        <p>Featured companies can buy clearly disclosed placement. They cannot buy a better project status, a verification flag, favorable discussion, or suppression of public evidence.</p>
+      </section>
+    </main>
+  );
+}
