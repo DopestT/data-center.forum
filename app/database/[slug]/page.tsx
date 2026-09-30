@@ -20,7 +20,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <h1>{project.name}</h1>
         <p>{project.summary}</p>
         <div className="heroActions">
-          <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Track with Pro — $49/mo</a>
+          <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Track with Pro Beta — $49/mo</a>
           <a href={project.source_url} target="_blank" rel="noreferrer">Open primary source →</a>
         </div>
       </section>
@@ -49,10 +49,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       </section>
 
       <section className="section intel">
-        <span className="kicker">WHY PRO EXISTS</span>
-        <h2>The database is free to search. Monitoring is paid.</h2>
-        <p>Use public records for one-off research. Upgrade when a project matters enough that you want change alerts, saved tracking, deeper filters, and export.</p>
-        <div className="heroActions"><a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Get Pro — $49/mo</a><Link href="/database">Back to database →</Link></div>
+        <span className="kicker">WHY PRO BETA EXISTS</span>
+        <h2>The database is free to search. Monitored research is paid.</h2>
+        <p>Use public records for one-off research. Pro Beta is manually fulfilled: tell us what matters, and we maintain the watchlist, change digest, priority data requests, and CSV snapshots while the self-serve dashboard is completed.</p>
+        <div className="heroActions"><a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo</a><Link href="/database">Back to database →</Link></div>
       </section>
     </main>
   );

@@ -47,7 +47,7 @@ export default async function DatabasePage({
         <p>Source-linked data-center projects organized by company, market, status, capacity, and investment. Every public record shows where the claim came from and when we last checked it.</p>
         <div className="heroActions">
           <a className="buttonLink" href="#results">Browse projects</a>
-          <a href={checkoutLinks.pro} target="_blank" rel="noreferrer">Get Pro — $49/mo →</a>
+          <a href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo →</a>
         </div>
       </section>
 
@@ -56,7 +56,7 @@ export default async function DatabasePage({
           <div><strong>{filtered.length}</strong><span>projects shown</span></div>
           <div><strong>{formatCapacity(capacityMw)}</strong><span>announced capacity</span></div>
           <div><strong>Source-linked</strong><span>public evidence trail</span></div>
-          <div><strong>$49/mo</strong><span>tracking + export</span></div>
+          <div><strong>$49/mo</strong><span>Pro Beta monitoring</span></div>
         </div>
       </section>
 
@@ -101,11 +101,11 @@ export default async function DatabasePage({
       </section>
 
       <section className="section intel databaseUpsell">
-        <span className="kicker">PRO</span>
+        <span className="kicker">PRO BETA</span>
         <h2>Stop checking the same project twice.</h2>
-        <p>Pro is the simple paid layer: project tracking, alerts when a record changes, advanced filters, and CSV export. No enterprise sales call required.</p>
+        <p>Pro Beta is manually fulfilled today: send us the project or company you care about and receive a watchlist, change digests, priority data requests, and CSV snapshots on request. The self-serve dashboard is still being completed.</p>
         <div className="heroActions">
-          <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro — $49/mo</a>
+          <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo</a>
           <a href={checkoutLinks.featuredCompany} target="_blank" rel="noreferrer">Feature a company — $99/mo →</a>
         </div>
       </section>
