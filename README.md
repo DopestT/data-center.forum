@@ -1,10 +1,10 @@
 # DataCenter.forum
 
-Independent practitioner community plus a B2B marketplace for the data-center industry.
+Source-linked data-center project intelligence database with a practitioner community and B2B marketplace supporting the research layer.
 
 ## Current foundation
 
-- Next.js 16 App Router.
+- Database-first public project intelligence surface with source trails and last-verified dates.\n- Next.js 16 App Router.
 - Supabase/Postgres forum schema with RLS.
 - Cold-start policy built around clearly labeled STAFF house accounts only; no fabricated members.
 - 36 practitioner questions scheduled across a four-week private-beta release.
