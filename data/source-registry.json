@@ -70,5 +70,34 @@
     "project_slug": "openai-stargate-milam-county-1-2gw",
     "publisher": "SB Energy",
     "url": "https://sbenergy.com/openai-and-softbank-group-partner-with-sb-energy/"
+  },
+  {
+    "id": "meta-temple",
+    "project_slug": "meta-temple-texas",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/07/temple-we-are-online/"
+  },
+  {
+    "id": "meta-eagle-mountain-2026",
+    "project_slug": "meta-eagle-mountain-utah",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/09/deepening-our-investment-in-eagle-mountain-utah/"
+  },
+  {
+    "id": "aws-fayette-ohio",
+    "project_slug": "aws-fayette-county-ohio",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio"
+  },
+  {
+    "id": "openai-five-stargate-sites",
+    "project_slugs": [
+      "openai-stargate-shackelford-county-texas",
+      "openai-stargate-dona-ana-county-new-mexico",
+      "openai-stargate-wisconsin-oracle-vantage",
+      "openai-stargate-lordstown-ohio"
+    ],
+    "publisher": "OpenAI",
+    "url": "https://openai.com/index/five-new-stargate-sites/"
   }
 ]
