@@ -12,6 +12,9 @@ export type IntelProject = {
   stage: string;
   announced_capacity_mw: number | null;
   investment_label: string | null;
+  investment_usd: number | null;
+  investment_basis: string | null;
+  investment_scope: string | null;
   summary: string;
   source_name: string;
   source_url: string;
@@ -22,7 +25,7 @@ export type IntelProject = {
 
 export const fallbackProjects = projectsData as IntelProject[];
 
-const projectFields = "id,slug,name,company,market,region,country,stage,announced_capacity_mw,investment_label,summary,source_name,source_url,source_published_at,last_verified_at,featured";
+const projectFields = "id,slug,name,company,market,region,country,stage,announced_capacity_mw,investment_label,investment_usd,investment_basis,investment_scope,summary,source_name,source_url,source_published_at,last_verified_at,featured";
 
 export async function getProjects(): Promise<IntelProject[]> {
   try {
