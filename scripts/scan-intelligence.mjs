@@ -34,7 +34,8 @@ async function fetchText(url) {
       signal: controller.signal,
       redirect: "follow",
       headers: {
-        "user-agent": "DataCenterForum-IntelligenceWatch/1.0 (+https://datacenter.forum)",
+        "user-agent": "Mozilla/5.0 (compatible; DataCenterForum/1.0; +https://datacenter.forum)",
+        "accept-language": "en-US,en;q=0.9",
         "accept": "text/html,application/xhtml+xml"
       }
     });
