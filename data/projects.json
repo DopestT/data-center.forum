@@ -15,7 +15,10 @@
     "source_url": "https://datacenters.atmeta.com/richland-parish-data-center/",
     "source_published_at": "2026-07-13",
     "last_verified_at": "2026-09-29T00:00:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 50000000000,
+    "investment_basis": "minimum",
+    "investment_scope": "project"
   },
   {
     "id": "amazon-northern-indiana",
@@ -33,7 +36,10 @@
     "source_url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers",
     "source_published_at": null,
     "last_verified_at": "2026-09-29T00:00:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 15000000000,
+    "investment_basis": "stated",
+    "investment_scope": "multi_site_program"
   },
   {
     "id": "openai-the-barn",
@@ -51,7 +57,10 @@
     "source_url": "https://openai.com/index/stargate-michigan-data-center/",
     "source_published_at": "2026-06-01",
     "last_verified_at": "2026-09-29T00:00:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": null,
+    "investment_basis": null,
+    "investment_scope": null
   },
   {
     "id": "meta-el-paso-1gw",
@@ -69,7 +78,10 @@
     "source_url": "https://datacenters.atmeta.com/2026/03/big-things-are-happening-el-paso/",
     "source_published_at": "2026-03-26",
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 10000000000,
+    "investment_basis": "minimum",
+    "investment_scope": "project"
   },
   {
     "id": "meta-beaver-dam",
@@ -87,7 +99,10 @@
     "source_url": "https://datacenters.atmeta.com/2025/11/hello-beaver-dam/",
     "source_published_at": "2025-11-12",
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": false
+    "featured": false,
+    "investment_usd": 1000000000,
+    "investment_basis": "minimum",
+    "investment_scope": "project"
   },
   {
     "id": "microsoft-mount-pleasant",
@@ -105,7 +120,10 @@
     "source_url": "https://news.microsoft.com/source/2026/06/23/microsoft-completes-construction-on-first-datacenter-facility-in-mount-pleasant-wisconsin/",
     "source_published_at": "2026-06-23",
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 4700000000,
+    "investment_basis": "local_spend_estimate",
+    "investment_scope": "regional_program"
   },
   {
     "id": "aws-mississippi-madison",
@@ -123,7 +141,10 @@
     "source_url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
     "source_published_at": null,
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": false
+    "featured": false,
+    "investment_usd": 10000000000,
+    "investment_basis": "stated",
+    "investment_scope": "multi_site_program"
   },
   {
     "id": "aws-pennsylvania-20b",
@@ -141,7 +162,10 @@
     "source_url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
     "source_published_at": "2025-06-09",
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 20000000000,
+    "investment_basis": "minimum",
+    "investment_scope": "state_program"
   },
   {
     "id": "aws-georgia-11b",
@@ -159,7 +183,10 @@
     "source_url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure",
     "source_published_at": null,
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": false
+    "featured": false,
+    "investment_usd": 11000000000,
+    "investment_basis": "estimated",
+    "investment_scope": "multi_site_program"
   },
   {
     "id": "aws-richmond-nc",
@@ -177,7 +204,10 @@
     "source_url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure",
     "source_published_at": "2025-06-04",
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": false
+    "featured": false,
+    "investment_usd": 10000000000,
+    "investment_basis": "stated",
+    "investment_scope": "county_program"
   },
   {
     "id": "google-fort-wayne",
@@ -195,7 +225,10 @@
     "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-centers-ai-skills-investments/",
     "source_published_at": null,
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": false
+    "featured": false,
+    "investment_usd": 2000000000,
+    "investment_basis": "stated",
+    "investment_scope": "project"
   },
   {
     "id": "openai-milam-1-2gw",
@@ -213,7 +246,10 @@
     "source_url": "https://openai.com/index/stargate-sb-energy-partnership/",
     "source_published_at": "2026-01-09",
     "last_verified_at": "2026-09-30T03:28:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": null,
+    "investment_basis": null,
+    "investment_scope": null
   },
   {
     "id": "meta-temple-texas",
@@ -231,7 +267,10 @@
     "source_url": "https://datacenters.atmeta.com/2026/07/temple-we-are-online/",
     "source_published_at": "2026-07-22",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 1200000000,
+    "investment_basis": "minimum",
+    "investment_scope": "project"
   },
   {
     "id": "meta-eagle-mountain-utah",
@@ -249,7 +288,10 @@
     "source_url": "https://datacenters.atmeta.com/2026/09/deepening-our-investment-in-eagle-mountain-utah/",
     "source_published_at": "2026-09-14",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 3000000000,
+    "investment_basis": "minimum",
+    "investment_scope": "cumulative_site_investment"
   },
   {
     "id": "aws-fayette-county-ohio",
@@ -267,7 +309,10 @@
     "source_url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio",
     "source_published_at": "2024-12-24",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": 5000000000,
+    "investment_basis": "estimated",
+    "investment_scope": "county_program"
   },
   {
     "id": "openai-stargate-shackelford",
@@ -285,7 +330,10 @@
     "source_url": "https://openai.com/index/five-new-stargate-sites/",
     "source_published_at": "2025-09-23",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": null,
+    "investment_basis": null,
+    "investment_scope": null
   },
   {
     "id": "openai-stargate-dona-ana",
@@ -303,7 +351,10 @@
     "source_url": "https://openai.com/index/five-new-stargate-sites/",
     "source_published_at": "2025-09-23",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": null,
+    "investment_basis": null,
+    "investment_scope": null
   },
   {
     "id": "openai-stargate-wisconsin",
@@ -321,7 +372,10 @@
     "source_url": "https://openai.com/index/five-new-stargate-sites/",
     "source_published_at": "2025-09-23",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": null,
+    "investment_basis": null,
+    "investment_scope": null
   },
   {
     "id": "openai-stargate-lordstown",
@@ -339,6 +393,9 @@
     "source_url": "https://openai.com/index/five-new-stargate-sites/",
     "source_published_at": "2025-09-23",
     "last_verified_at": "2026-09-30T03:45:00Z",
-    "featured": true
+    "featured": true,
+    "investment_usd": null,
+    "investment_basis": null,
+    "investment_scope": null
   }
 ]
