@@ -1,6 +1,7 @@
 export const checkoutLinks = {
   pro: "https://buy.stripe.com/3cI7sL7Rp4jyad08e1dZ60a",
-  featuredCompany: "https://buy.stripe.com/14A4gz1t12bqdpc79XdZ60b"
+  featuredCompany: "https://buy.stripe.com/14A4gz1t12bqdpc79XdZ60b",
+  dataPartnerInquiry: "https://buy.stripe.com/fZubJ11t12bq84S79XdZ60c"
 } as const;
 
 export const companyPlans = [
