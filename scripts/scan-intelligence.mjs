@@ -55,7 +55,8 @@ for (const source of registry) {
   try {
     const text = await fetchText(source.url);
     const hash = crypto.createHash("sha256").update(text).digest("hex");
-    const projectSlugs = source.project_slugs ?? (source.project_slug ? [source.project_slug] : []);\n    const previous = snapshots[source.id];
+    const projectSlugs = source.project_slugs ?? (source.project_slug ? [source.project_slug] : []);
+    const previous = snapshots[source.id];
 
     if (!previous) {
       snapshots[source.id] = { hash, project_slugs: projectSlugs, publisher: source.publisher, url: source.url, first_seen_at: detectedAt, changed_at: detectedAt };
