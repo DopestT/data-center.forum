@@ -1,0 +1,74 @@
+[
+  {
+    "id": "meta-richland",
+    "project_slug": "meta-hyperion-richland-parish",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/07/deepening-our-investment-in-richland-parish-louisiana/"
+  },
+  {
+    "id": "aws-northern-indiana",
+    "project_slug": "amazon-northern-indiana-2-4gw",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers"
+  },
+  {
+    "id": "openai-the-barn",
+    "project_slug": "openai-the-barn-saline-michigan",
+    "publisher": "Related Digital",
+    "url": "https://www.related.com/press-releases/2026-06-01/related-digital-blackstone-oracle-openai-walbridge-and-governor-whitmer"
+  },
+  {
+    "id": "meta-el-paso",
+    "project_slug": "meta-el-paso-1gw",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2026/03/big-things-are-happening-el-paso/"
+  },
+  {
+    "id": "meta-beaver-dam",
+    "project_slug": "meta-beaver-dam-wisconsin",
+    "publisher": "Meta Data Centers",
+    "url": "https://datacenters.atmeta.com/2025/11/hello-beaver-dam/"
+  },
+  {
+    "id": "microsoft-mount-pleasant",
+    "project_slug": "microsoft-fairwater-mount-pleasant",
+    "publisher": "Microsoft",
+    "url": "https://news.microsoft.com/source/2026/06/23/microsoft-completes-construction-on-first-datacenter-facility-in-mount-pleasant-wisconsin/"
+  },
+  {
+    "id": "aws-mississippi",
+    "project_slug": "aws-madison-county-mississippi",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi"
+  },
+  {
+    "id": "aws-pennsylvania",
+    "project_slug": "aws-pennsylvania-ai-campuses",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation"
+  },
+  {
+    "id": "aws-georgia",
+    "project_slug": "aws-butts-douglas-georgia",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure"
+  },
+  {
+    "id": "aws-north-carolina",
+    "project_slug": "aws-richmond-county-north-carolina",
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure"
+  },
+  {
+    "id": "google-fort-wayne",
+    "project_slug": "google-fort-wayne-indiana",
+    "publisher": "Google",
+    "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-centers-ai-skills-investments/"
+  },
+  {
+    "id": "openai-milam",
+    "project_slug": "openai-stargate-milam-county-1-2gw",
+    "publisher": "SB Energy",
+    "url": "https://sbenergy.com/openai-and-softbank-group-partner-with-sb-energy/"
+  }
+]
