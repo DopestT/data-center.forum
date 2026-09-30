@@ -3,6 +3,21 @@ export const checkoutLinks = {
   featuredCompany: "https://buy.stripe.com/14A4gz1t12bqdpc79XdZ60b"
 } as const;
 
+export const companyPlans = [
+  {
+    name: "Directory",
+    price: "Free",
+    description: "A reviewed public company profile.",
+    features: ["Company profile", "Category placement", "Website link", "Eligible for verification"]
+  },
+  {
+    name: "Featured Company",
+    price: "$99/mo",
+    description: "Clearly labeled priority discovery for companies serving the data-center market.",
+    features: ["Everything in Directory", "Priority discovery placement", "Featured badge", "Buyer-facing visibility"]
+  }
+] as const;
+
 export const vendorCategories = [
   "Commissioning",
   "Electrical Contractors",
@@ -19,27 +34,6 @@ export const vendorCategories = [
   "Security",
   "Maintenance & Service",
   "Brokerage & Advisory"
-] as const;
-
-export const foundingPlans = [
-  {
-    name: "Vendor",
-    price: "$99/mo",
-    description: "Verified directory presence for companies serving the data-center market.",
-    features: ["Verified vendor profile", "Category placement", "Website link", "Lead request inbox"]
-  },
-  {
-    name: "Featured Vendor",
-    price: "$299/mo",
-    description: "Higher visibility for vendors actively building pipeline.",
-    features: ["Everything in Vendor", "Featured placement", "Priority category position", "Lead analytics"]
-  },
-  {
-    name: "Founding Partner",
-    price: "$1,500 / 90 days",
-    description: "Limited launch package for the first 20 commercial partners.",
-    features: ["Founding Partner badge", "Homepage rotation", "One disclosed AMA or sponsored question", "Newsletter inclusion", "Early buyer-intent access", "Preferred renewal rate"]
-  }
 ] as const;
 
 export const jobPlans = [
