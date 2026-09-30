@@ -2,10 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { checkoutLinks } from "../../../lib/monetization";
 import { formatCapacity, formatVerified, getProject } from "../../../lib/intelligence";
+import { getProjectGraph } from "../../../lib/intelligence-graph";
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = await getProject(slug);
+  const [project, graph] = await Promise.all([getProject(slug), getProjectGraph(slug)]);
   if (!project) notFound();
 
   return (
@@ -35,6 +36,70 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <div><span>Last checked</span><strong>{formatVerified(project.last_verified_at)}</strong></div>
         </div>
       </section>
+
+
+      {(graph.participants.length > 0 || graph.facts.length > 0 || graph.events.length > 0) && (
+        <section className="section intelligenceGraphSection">
+          <div className="sectionHead">
+            <div>
+              <span className="kicker">INTELLIGENCE GRAPH</span>
+              <h2>Who and what is attached</h2>
+            </div>
+            <span className="mutedText">{graph.participants.length} organizations · {graph.facts.length} structured signals</span>
+          </div>
+
+          {graph.participants.length > 0 && (
+            <>
+              <h3 className="graphSubhead">Organizations & roles</h3>
+              <div className="participantGrid">
+                {graph.participants.map((participant) => (
+                  <article className="participantCard" key={`${participant.name}-${participant.role}`}>
+                    <span>{participant.role}</span>
+                    <h4>{participant.name}</h4>
+                    <p>{participant.note}</p>
+                    <a href={participant.sourceUrl} target="_blank" rel="noreferrer">{participant.sourceName} →</a>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+
+          {graph.facts.length > 0 && (
+            <>
+              <h3 className="graphSubhead">Structured signals</h3>
+              <div className="signalGrid">
+                {graph.facts.map((fact) => (
+                  <article className="signalCard" key={`${fact.category}-${fact.label}`}>
+                    <span>{fact.category}</span>
+                    <small>{fact.label}</small>
+                    <strong>{fact.value}</strong>
+                    <a href={fact.sourceUrl} target="_blank" rel="noreferrer">{fact.sourceName} →</a>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+
+          {graph.events.length > 0 && (
+            <>
+              <h3 className="graphSubhead">Material changes</h3>
+              <div className="eventTimeline">
+                {graph.events.map((event) => (
+                  <article className="eventRow" key={`${event.date}-${event.headline}`}>
+                    <div className="eventDate">{formatVerified(event.date)}</div>
+                    <div>
+                      <div className="vendorBadges"><span>{event.type}</span><span>{event.materiality.toUpperCase()}</span></div>
+                      <h4>{event.headline}</h4>
+                      <p>{event.summary}</p>
+                      <a href={event.sourceUrl} target="_blank" rel="noreferrer">{event.sourceName} →</a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       <section className="section darkSection">
         <div className="sectionHead"><div><span className="kicker">EVIDENCE</span><h2>Source trail</h2></div></div>
