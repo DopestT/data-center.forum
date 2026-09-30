@@ -55,10 +55,10 @@ for (const source of registry) {
   try {
     const text = await fetchText(source.url);
     const hash = crypto.createHash("sha256").update(text).digest("hex");
-    const previous = snapshots[source.id];
+    const projectSlugs = source.project_slugs ?? (source.project_slug ? [source.project_slug] : []);\n    const previous = snapshots[source.id];
 
     if (!previous) {
-      snapshots[source.id] = { hash, project_slug: source.project_slug, publisher: source.publisher, url: source.url, first_seen_at: detectedAt, changed_at: detectedAt };
+      snapshots[source.id] = { hash, project_slugs: projectSlugs, publisher: source.publisher, url: source.url, first_seen_at: detectedAt, changed_at: detectedAt };
       baselineCount += 1;
       continue;
     }
@@ -66,7 +66,7 @@ for (const source of registry) {
     if (previous.hash !== hash) {
       const change = {
         source_id: source.id,
-        project_slug: source.project_slug,
+        project_slugs: projectSlugs,
         publisher: source.publisher,
         url: source.url,
         detected_at: detectedAt,
@@ -96,7 +96,7 @@ if (changes.length) {
     `Detected: ${detectedAt}`,
     "",
     ...changes.flatMap((change) => [
-      `## ${change.publisher} — ${change.project_slug}`,
+      `## ${change.publisher} — ${(change.project_slugs ?? []).join(", ") || "multi-project source"}`,
       `- Source: ${change.url}`,
       `- Status: needs verification`,
       `- Previous fingerprint: ${change.previous_hash.slice(0, 12)}…`,
