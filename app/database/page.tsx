@@ -35,7 +35,8 @@ export default async function DatabasePage({
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
-          <Link href="/vendors">Companies</Link>
+          <Link href="/database/companies">Operators</Link>
+          <Link href="/database/markets">Markets</Link>
           <Link href="/pricing">Pricing</Link>
           <Link href="/jobs">Jobs</Link>
         </nav>
@@ -57,6 +58,17 @@ export default async function DatabasePage({
           <div><strong>{formatCapacity(capacityMw)}</strong><span>announced capacity</span></div>
           <div><strong>Source-linked</strong><span>public evidence trail</span></div>
           <div><strong>$49/mo</strong><span>Pro Beta monitoring</span></div>
+        </div>
+      </section>
+
+      <section className="section compactSection databaseBrowsePaths">
+        <div className="sectionHead">
+          <div><span className="kicker">BROWSE INTELLIGENCE</span><h2>Follow the buildout from different angles.</h2></div>
+        </div>
+        <div className="browsePathGrid">
+          <Link href="/database/companies"><span>OPERATORS</span><h3>Projects by company</h3><p>Roll the canonical project set up by primary operator.</p><strong>Browse operators →</strong></Link>
+          <Link href="/database/markets"><span>MARKETS</span><h3>Projects by state</h3><p>See project concentration, operators, capacity, and investment signals by U.S. state.</p><strong>Browse markets →</strong></Link>
+          <Link href="/intelligence"><span>DATA PRODUCT</span><h3>Structured intelligence</h3><p>See exports, monitoring, source watches, and custom data access.</p><strong>See data access →</strong></Link>
         </div>
       </section>
 
