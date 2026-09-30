@@ -23,10 +23,10 @@ export default async function Home() {
       <section className="hero databaseFrontHero">
         <div className="eyebrow">DATA CENTER PROJECT & POWER DATABASE</div>
         <h1>Know what is being built.</h1>
-        <p>Search source-linked data-center projects by company, market, status, capacity, and investment. Public research stays free. Monitoring is the paid layer.</p>
+        <p>Search source-linked data-center projects by company, market, status, capacity, and investment. Public research stays free. Pro Beta is the paid monitoring layer while self-serve tracking is completed.</p>
         <div className="heroActions">
           <Link className="buttonLink" href="/database">Search the database</Link>
-          <a href={checkoutLinks.pro} target="_blank" rel="noreferrer">Get Pro — $49/mo →</a>
+          <a href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo →</a>
         </div>
         <div className="signals">
           <span>Source-linked</span>
@@ -68,9 +68,9 @@ export default async function Home() {
       <section className="section intel databaseUpsell">
         <span className="kicker">MONETIZATION</span>
         <h2>Two reasons to pay.</h2>
-        <p><strong>Pro — $49/month:</strong> track projects, get change alerts, use advanced filters, and export. <strong>Featured Company — $99/month:</strong> stronger company discovery and clearly labeled priority placement.</p>
+        <p><strong>Pro Beta — $49/month:</strong> a manually fulfilled project watchlist, change digests, priority data requests, and CSV snapshots on request while the self-serve dashboard is completed. <strong>Featured Company — $99/month:</strong> stronger company discovery and clearly labeled priority placement.</p>
         <div className="heroActions">
-          <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro — $49/mo</a>
+          <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo</a>
           <a href={checkoutLinks.featuredCompany} target="_blank" rel="noreferrer">Feature a company — $99/mo →</a>
         </div>
       </section>
