@@ -11,12 +11,12 @@ const plans = [
     cta: "Browse free"
   },
   {
-    name: "Pro",
+    name: "Pro Beta",
     price: "$49/mo",
-    detail: "For people who need to keep watching projects.",
-    features: ["Everything public", "Track projects", "Change alerts", "Advanced filters", "CSV export"],
+    detail: "Manual monitoring service while the self-serve dashboard is completed.",
+    features: ["Everything public", "Project watchlist", "Change digests", "Priority data requests", "CSV snapshots on request"],
     href: checkoutLinks.pro,
-    cta: "Start Pro"
+    cta: "Start Pro Beta"
   },
   {
     name: "Featured Company",
@@ -39,13 +39,13 @@ export default function PricingPage() {
       <section className="commerceHero">
         <span className="kicker">SIMPLE PRICING</span>
         <h1>Search free. Pay when the data needs to work for you.</h1>
-        <p>The first paid version is deliberately small: $49/month to monitor the database, or $99/month to make a company more discoverable.</p>
+        <p>The first paid version is deliberately small: $49/month for manually fulfilled Pro Beta monitoring, or $99/month to make a company more discoverable. Pro Beta does not yet include a self-serve tracking dashboard.</p>
       </section>
 
       <section className="section darkSection">
         <div className="pricingGrid">
           {plans.map((plan) => (
-            <article className={`priceCard ${plan.name === "Pro" ? "featuredPrice" : ""}`} key={plan.name}>
+            <article className={`priceCard ${plan.name === "Pro Beta" ? "featuredPrice" : ""}`} key={plan.name}>
               <span>{plan.name}</span>
               <h3>{plan.price}</h3>
               <p>{plan.detail}</p>
