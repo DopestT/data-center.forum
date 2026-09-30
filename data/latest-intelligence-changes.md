@@ -1,3 +1,33 @@
 # Intelligence source changes
 
-No source changes have been detected yet.
+Detected: 2026-09-30T16:50:36.019Z
+
+## Amazon Web Services — aws-madison-county-mississippi
+- Source: https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi
+- Status: needs verification
+- Previous fingerprint: a869d3ae9d68…
+- Current fingerprint: 201f7220dfea…
+
+## Amazon Web Services — aws-pennsylvania-ai-campuses
+- Source: https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation
+- Status: needs verification
+- Previous fingerprint: 8d389cc3f420…
+- Current fingerprint: 499b13402fa7…
+
+## Amazon Web Services — aws-butts-douglas-georgia
+- Source: https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure
+- Status: needs verification
+- Previous fingerprint: b7213fe18655…
+- Current fingerprint: db02edaf8804…
+
+## Amazon Web Services — aws-richmond-county-north-carolina
+- Source: https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure
+- Status: needs verification
+- Previous fingerprint: 4c29578de3e3…
+- Current fingerprint: 35d4415e1900…
+
+## Amazon Web Services — aws-fayette-county-ohio
+- Source: https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio
+- Status: needs verification
+- Previous fingerprint: 328e6b3e7524…
+- Current fingerprint: ba7d4ecbd452…

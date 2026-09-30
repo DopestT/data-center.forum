@@ -48,36 +48,36 @@
     "changed_at": "2026-09-30T03:38:03.298Z"
   },
   "aws-mississippi": {
-    "hash": "a869d3ae9d68b9949e0cbdd33e4ed1089a1ad0c9061b045f3c095e3c47a5e2f7",
+    "hash": "201f7220dfea7b8ffa4fc8e89f2dea3d83eb53fdcaf1a18502ca6be5db6cecaa",
     "project_slug": "aws-madison-county-mississippi",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T03:38:03.298Z"
+    "changed_at": "2026-09-30T16:50:36.019Z"
   },
   "aws-pennsylvania": {
-    "hash": "8d389cc3f4200d0782291b3f7f97adcec11b32b61d54d9f47fe80895e149b709",
+    "hash": "499b13402fa7c7ce27375782ed1e47412f4322cbe08ec8ede8418f16666a551d",
     "project_slug": "aws-pennsylvania-ai-campuses",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T03:38:03.298Z"
+    "changed_at": "2026-09-30T16:50:36.019Z"
   },
   "aws-georgia": {
-    "hash": "b7213fe1865588ad8a66c1bf61e4e80a68f770efa5c288c575470a2109c2f6ce",
+    "hash": "db02edaf880440499c6d3f3a3dfa8ff32f17d4996262f374a1179e50b6d09f19",
     "project_slug": "aws-butts-douglas-georgia",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T03:38:03.298Z"
+    "changed_at": "2026-09-30T16:50:36.019Z"
   },
   "aws-north-carolina": {
-    "hash": "4c29578de3e30caf75aa28c76b63ead147e8c0a64563bd78970774fa358311a7",
+    "hash": "35d4415e1900a32a6bac796cba811ab66b4aa9799a96f30e90e78c57f784480a",
     "project_slug": "aws-richmond-county-north-carolina",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T03:38:03.298Z"
+    "changed_at": "2026-09-30T16:50:36.019Z"
   },
   "google-fort-wayne": {
     "hash": "cf33bc5cd1f92a38e31a74bc1cacd41121eb91329fb1803c5839bbd43ed65827",
@@ -116,14 +116,14 @@
     "changed_at": "2026-09-30T03:46:22.023Z"
   },
   "aws-fayette-ohio": {
-    "hash": "328e6b3e752429c9fe89d0e96117d09df6648b4cfc9f40111c98d0072dc60c90",
+    "hash": "ba7d4ecbd4521eb0561f8e00124580b40c0379e16c8ad05ae9edc3c5a9583fe4",
     "project_slugs": [
       "aws-fayette-county-ohio"
     ],
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio",
     "first_seen_at": "2026-09-30T03:46:22.023Z",
-    "changed_at": "2026-09-30T03:46:22.023Z"
+    "changed_at": "2026-09-30T16:50:36.019Z"
   },
   "openai-five-stargate-sites": {
     "hash": "a625df6eaf362ec79904708236d00a5f9ba8eba318092ce45fd38d87965fc322",
