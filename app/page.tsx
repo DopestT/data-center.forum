@@ -13,6 +13,7 @@ export default async function Home() {
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
+          <Link href="/intelligence">Data</Link>
           <Link href="/vendors">Companies</Link>
           <Link href="/pricing">Pricing</Link>
           <Link href="/jobs">Jobs</Link>
@@ -56,7 +57,7 @@ export default async function Home() {
       <SponsoredSlot placement="home-between-sections" />
 
       <section className="section databaseValue">
-        <div className="sectionHead"><div><span className="kicker">THE PRODUCT</span><h2>The database is the front door now.</h2></div></div>
+        <div className="sectionHead"><div><span className="kicker">THE PRODUCT</span><h2>The database is the front door now.</h2></div><Link href="/intelligence">See the data product →</Link></div>
         <div className="valueGrid">
           <article><span>01</span><h3>Projects</h3><p>Capacity, investment, stage, company, location, and source trail.</p></article>
           <article><span>02</span><h3>Companies</h3><p>Operators, developers, vendors, contractors, and the work they are attached to.</p></article>
