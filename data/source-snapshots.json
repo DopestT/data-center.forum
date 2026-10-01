@@ -8,12 +8,12 @@
     "changed_at": "2026-09-30T03:38:03.298Z"
   },
   "aws-northern-indiana": {
-    "hash": "e66e06b0b8e45b69cda81840b163cdcc4ae62d7cb1e628d7d37973a1d487271a",
+    "hash": "b0b9a53225f5b3650995306da398bba48936c2369ce291e895588cafda638530",
     "project_slug": "amazon-northern-indiana-2-4gw",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T03:38:03.298Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "openai-the-barn": {
     "hash": "46ad44ac5d167bb3319faeff7e818aef650bbaeec7d270a516f37869eef2405c",
@@ -48,44 +48,44 @@
     "changed_at": "2026-09-30T03:38:03.298Z"
   },
   "aws-mississippi": {
-    "hash": "201f7220dfea7b8ffa4fc8e89f2dea3d83eb53fdcaf1a18502ca6be5db6cecaa",
+    "hash": "7cbaaa9815e327ef2d0d1260cbc4deaa6d7dbe479266444274c2872a9a448aab",
     "project_slug": "aws-madison-county-mississippi",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T16:50:36.019Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "aws-pennsylvania": {
-    "hash": "499b13402fa7c7ce27375782ed1e47412f4322cbe08ec8ede8418f16666a551d",
+    "hash": "43d09deab32ccb2d2babc15e697b93587604bf820311ae1978d5aa936e7dccec",
     "project_slug": "aws-pennsylvania-ai-campuses",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T16:50:36.019Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "aws-georgia": {
-    "hash": "db02edaf880440499c6d3f3a3dfa8ff32f17d4996262f374a1179e50b6d09f19",
+    "hash": "a78e7c9c3391dd634d7a560cfe0f693ce659b2c0bdcb0e7ff96bdacdded168fd",
     "project_slug": "aws-butts-douglas-georgia",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T16:50:36.019Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "aws-north-carolina": {
-    "hash": "35d4415e1900a32a6bac796cba811ab66b4aa9799a96f30e90e78c57f784480a",
+    "hash": "d968a331a585116fd3a77ccfa879aa994f1e6b0118d1c2faabb67c0babec907b",
     "project_slug": "aws-richmond-county-north-carolina",
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T16:50:36.019Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "google-fort-wayne": {
-    "hash": "cf33bc5cd1f92a38e31a74bc1cacd41121eb91329fb1803c5839bbd43ed65827",
+    "hash": "5327dc876f03db5628dcfc410725f13ed7e5cdf87ec67806e6db0716a22f72d0",
     "project_slug": "google-fort-wayne-indiana",
     "publisher": "Google",
     "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-centers-ai-skills-investments/",
     "first_seen_at": "2026-09-30T03:38:03.298Z",
-    "changed_at": "2026-09-30T03:38:03.298Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "openai-milam": {
     "hash": "1df18453510ab8ca02cb0703cb35874eb19bb584159c9c5eb8720f9c31bfbfa9",
@@ -116,14 +116,14 @@
     "changed_at": "2026-09-30T03:46:22.023Z"
   },
   "aws-fayette-ohio": {
-    "hash": "ba7d4ecbd4521eb0561f8e00124580b40c0379e16c8ad05ae9edc3c5a9583fe4",
+    "hash": "30a78c898558db733bc612dda9ade24451391ac01c8c13b3ef437c0215448fdb",
     "project_slugs": [
       "aws-fayette-county-ohio"
     ],
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio",
     "first_seen_at": "2026-09-30T03:46:22.023Z",
-    "changed_at": "2026-09-30T16:50:36.019Z"
+    "changed_at": "2026-10-01T17:24:21.831Z"
   },
   "openai-five-stargate-sites": {
     "hash": "a625df6eaf362ec79904708236d00a5f9ba8eba318092ce45fd38d87965fc322",
