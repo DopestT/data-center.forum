@@ -1,0 +1,67 @@
+{
+  "amazon-northern-indiana-2-4gw": {
+    "precision": "region",
+    "areas": [
+      "Northern Indiana"
+    ],
+    "source_url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers",
+    "note": "Regional announcement; exact campus sites are not established by this source.",
+    "exact_site_verified": false
+  },
+  "aws-madison-county-mississippi": {
+    "precision": "county",
+    "areas": [
+      "Madison County, Mississippi"
+    ],
+    "source_url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
+    "note": "Two industrial-park complexes; no exact facility coordinates verified.",
+    "exact_site_verified": false
+  },
+  "aws-pennsylvania-ai-campuses": {
+    "precision": "township",
+    "areas": [
+      "Salem Township, Pennsylvania",
+      "Falls Township, Pennsylvania"
+    ],
+    "source_url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
+    "note": "Two announced township locations share one statewide investment program; do not duplicate the investment.",
+    "exact_site_verified": false
+  },
+  "aws-butts-douglas-georgia": {
+    "precision": "county",
+    "areas": [
+      "Butts County, Georgia",
+      "Douglas County, Georgia"
+    ],
+    "source_url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure",
+    "note": "Two counties share one investment program; no exact facility coordinates verified.",
+    "exact_site_verified": false
+  },
+  "aws-richmond-county-north-carolina": {
+    "precision": "county",
+    "areas": [
+      "Richmond County, North Carolina"
+    ],
+    "source_url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure",
+    "note": "County location supported; no exact facility coordinates verified.",
+    "exact_site_verified": false
+  },
+  "google-fort-wayne-indiana": {
+    "precision": "city",
+    "areas": [
+      "Fort Wayne, Indiana"
+    ],
+    "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-centers-ai-skills-investments/",
+    "note": "City location supported; no exact facility coordinates verified.",
+    "exact_site_verified": false
+  },
+  "aws-fayette-county-ohio": {
+    "precision": "county",
+    "areas": [
+      "Fayette County, Ohio"
+    ],
+    "source_url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio",
+    "note": "County location supported; $5B is the local announced investment, not the broader $10B Ohio program.",
+    "exact_site_verified": false
+  }
+}

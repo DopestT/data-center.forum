@@ -3,11 +3,13 @@ import { notFound } from "next/navigation";
 import { checkoutLinks } from "../../../lib/monetization";
 import { formatCapacity, formatVerified, getProject } from "../../../lib/intelligence";
 import { getProjectGraph } from "../../../lib/intelligence-graph";
+import { getLocationEvidence } from "../../../lib/intelligence-location";
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const [project, graph] = await Promise.all([getProject(slug), getProjectGraph(slug)]);
   if (!project) notFound();
+  const locationEvidence = getLocationEvidence(slug, project.source_url);
 
   return (
     <main>
@@ -31,10 +33,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           <div><span>Company</span><strong>{project.company}</strong></div>
           <div><span>Market</span><strong>{project.market}</strong></div>
           <div><span>Location</span><strong>{project.region}</strong></div>
+          {locationEvidence ? <div><span>Location precision</span><strong>{locationEvidence.precision}</strong></div> : null}
           <div><span>Announced capacity</span><strong>{formatCapacity(project.announced_capacity_mw)}</strong></div>
           <div><span>Investment</span><strong>{project.investment_label ?? "Not published"}</strong></div>
           <div><span>Last checked</span><strong>{formatVerified(project.last_verified_at)}</strong></div>
         </div>
+        {locationEvidence ? <p>{locationEvidence.areas.join("; ")}. {locationEvidence.note}</p> : null}
       </section>
 
 

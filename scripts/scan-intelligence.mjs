@@ -1,5 +1,6 @@
 import fs from "node:fs";
-import crypto from "node:crypto";
+import { extractContent, observeSource } from "./intelligence-content.mjs";
+const dryRun = process.argv.includes("--dry-run");
 
 const registryPath = new URL("../data/source-registry.json", import.meta.url);
 const snapshotPath = new URL("../data/source-snapshots.json", import.meta.url);
@@ -9,22 +10,6 @@ const latestPath = new URL("../data/latest-intelligence-changes.md", import.meta
 const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
 const snapshots = fs.existsSync(snapshotPath) ? JSON.parse(fs.readFileSync(snapshotPath, "utf8")) : {};
 const queue = fs.existsSync(queuePath) ? JSON.parse(fs.readFileSync(queuePath, "utf8")) : [];
-
-function normalizeHtml(html) {
-  return html
-    .replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
-    .replace(/<svg[\s\S]*?<\/svg>/gi, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;|&#160;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;|&#34;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 async function fetchText(url) {
   const controller = new AbortController();
@@ -40,7 +25,7 @@ async function fetchText(url) {
       }
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return normalizeHtml(await response.text());
+    return extractContent(await response.text(), url);
   } finally {
     clearTimeout(timeout);
   }
@@ -50,44 +35,26 @@ const detectedAt = new Date().toISOString();
 const changes = [];
 const failures = [];
 let baselineCount = 0;
+let observedCount = 0;
 
 for (const source of registry) {
   try {
-    const text = await fetchText(source.url);
-    const hash = crypto.createHash("sha256").update(text).digest("hex");
-    const projectSlugs = source.project_slugs ?? (source.project_slug ? [source.project_slug] : []);
-    const previous = snapshots[source.id];
-
-    if (!previous) {
-      snapshots[source.id] = { hash, project_slugs: projectSlugs, publisher: source.publisher, url: source.url, first_seen_at: detectedAt, changed_at: detectedAt };
-      baselineCount += 1;
-      continue;
-    }
-
-    if (previous.hash !== hash) {
-      const change = {
-        source_id: source.id,
-        project_slugs: projectSlugs,
-        publisher: source.publisher,
-        url: source.url,
-        detected_at: detectedAt,
-        previous_hash: previous.hash,
-        current_hash: hash,
-        status: "needs_verification"
-      };
-      changes.push(change);
-      snapshots[source.id] = { ...previous, hash, changed_at: detectedAt };
-    }
+    const content = await fetchText(source.url);
+    const result = observeSource(source, content, snapshots[source.id], detectedAt);
+    snapshots[source.id] = result.snapshot;
+    observedCount += 1;
+    if (result.baseline) baselineCount += 1;
+    if (result.change) changes.push(result.change);
   } catch (error) {
     failures.push({ source_id: source.id, url: source.url, error: error instanceof Error ? error.message : String(error) });
   }
 }
 
-if (baselineCount || changes.length) {
+if (!dryRun && observedCount) {
   fs.writeFileSync(snapshotPath, JSON.stringify(snapshots, null, 2) + "\n");
 }
 
-if (changes.length) {
+if (!dryRun && changes.length) {
   const nextQueue = [...changes, ...queue].slice(0, 500);
   fs.writeFileSync(queuePath, JSON.stringify(nextQueue, null, 2) + "\n");
 
@@ -108,13 +75,14 @@ if (changes.length) {
   fs.writeFileSync(latestPath, lines.join("\n"));
 }
 
-if (process.env.GITHUB_OUTPUT) {
+if (!dryRun && process.env.GITHUB_OUTPUT) {
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `change_count=${changes.length}\n`);
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `baseline_count=${baselineCount}\n`);
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `failure_count=${failures.length}\n`);
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `observed_count=${observedCount}\n`);
 }
 
-console.log(JSON.stringify({ checked: registry.length, baselineCount, changeCount: changes.length, failures }, null, 2));
+console.log(JSON.stringify({ dryRun, checked: registry.length, observedCount, baselineCount, changeCount: changes.length, failures }, null, 2));
 
 if (failures.length > Math.ceil(registry.length / 2)) {
   process.exitCode = 1;
