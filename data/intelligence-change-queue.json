@@ -6,6 +6,90 @@
     ],
     "publisher": "Amazon Web Services",
     "url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "b0b9a53225f5b3650995306da398bba48936c2369ce291e895588cafda638530",
+    "current_hash": "109968bc17f36e816f78ef0354a6151915a87988bab0f60bbc61463db1a612a4",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "aws-mississippi",
+    "project_slugs": [
+      "aws-madison-county-mississippi"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "7cbaaa9815e327ef2d0d1260cbc4deaa6d7dbe479266444274c2872a9a448aab",
+    "current_hash": "51cbaab86ea6b112b335c73d397aa83793a2428f2c496d9afa125572c20faf95",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "aws-pennsylvania",
+    "project_slugs": [
+      "aws-pennsylvania-ai-campuses"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "43d09deab32ccb2d2babc15e697b93587604bf820311ae1978d5aa936e7dccec",
+    "current_hash": "5ce9d318879c2f6ff0cd4c2141c4ddf71e6aa20e1fc7dfd2632f67a53b73ace9",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "aws-georgia",
+    "project_slugs": [
+      "aws-butts-douglas-georgia"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-investment-georgia-ai-cloud-infrastructure",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "a78e7c9c3391dd634d7a560cfe0f693ce659b2c0bdcb0e7ff96bdacdded168fd",
+    "current_hash": "5471fc2bc31f86d004eefeb97dc0b86b9db9581be5ca6adf97de8d9fc7e15acd",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "aws-north-carolina",
+    "project_slugs": [
+      "aws-richmond-county-north-carolina"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-investment-north-carolina-ai-cloud-infrastructure",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "d968a331a585116fd3a77ccfa879aa994f1e6b0118d1c2faabb67c0babec907b",
+    "current_hash": "621df706daecc45b604a389c62662d570ea061259dc42afa136cb3d42231eb92",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "google-fort-wayne",
+    "project_slugs": [
+      "google-fort-wayne-indiana"
+    ],
+    "publisher": "Google",
+    "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/google-data-centers-ai-skills-investments/",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "5327dc876f03db5628dcfc410725f13ed7e5cdf87ec67806e6db0716a22f72d0",
+    "current_hash": "be7a4f00ed67c1753282b2fe3f08bfc071295dece590cf3b669de4adb2a06e4d",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "aws-fayette-ohio",
+    "project_slugs": [
+      "aws-fayette-county-ohio"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/aws/aws-continues-to-invest-in-ohio",
+    "detected_at": "2026-10-02T16:40:13.088Z",
+    "previous_hash": "30a78c898558db733bc612dda9ade24451391ac01c8c13b3ef437c0215448fdb",
+    "current_hash": "a430af6d5b365d141f9ffdb8390ed7134b7e730eaef48006951113043447d031",
+    "status": "needs_verification"
+  },
+  {
+    "source_id": "aws-northern-indiana",
+    "project_slugs": [
+      "amazon-northern-indiana-2-4gw"
+    ],
+    "publisher": "Amazon Web Services",
+    "url": "https://www.aboutamazon.com/news/company-news/amazon-15-billion-indiana-data-centers",
     "detected_at": "2026-10-01T17:24:21.831Z",
     "previous_hash": "e66e06b0b8e45b69cda81840b163cdcc4ae62d7cb1e628d7d37973a1d487271a",
     "current_hash": "b0b9a53225f5b3650995306da398bba48936c2369ce291e895588cafda638530",
