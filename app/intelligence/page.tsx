@@ -2,10 +2,13 @@ import Link from "next/link";
 import projects from "../../data/projects.json";
 import graph from "../../data/project-graph.json";
 import registry from "../../data/source-registry.json";
+import watch from "../../data/intelligence-watch.json";
 import { checkoutLinks } from "../../lib/monetization";
 
 const knownCapacityMw = projects.reduce((sum, project) => sum + (project.announced_capacity_mw ?? 0), 0);
 const enrichedProjects = Object.keys(graph).length;
+const watchFacts = watch.records.filter((record) => record.kind === "fact");
+const watchForecasts = watch.records.filter((record) => record.kind === "forecast");
 
 export default function IntelligencePage() {
   const capacityLabel = knownCapacityMw >= 1000 ? `${(knownCapacityMw / 1000).toFixed(1)} GW` : `${knownCapacityMw} MW`;
@@ -38,6 +41,33 @@ export default function IntelligencePage() {
           <div><strong>{enrichedProjects}</strong><span>relationship-enriched projects</span></div>
           <div><strong>{capacityLabel}</strong><span>known announced capacity</span></div>
         </div>
+      </section>
+
+
+      <section className="section darkSection">
+        <div className="sectionHead">
+          <div><span className="kicker">NORTH AMERICA WATCH</span><h2>Latest verified signals</h2></div>
+          <span>{watchFacts.length} facts · {watchForecasts.length} forecast</span>
+        </div>
+        <div className="valueGrid intelligenceValueGrid">
+          {watchFacts.slice().sort((a, b) => b.event_date.localeCompare(a.event_date)).map((record) => (
+            <article key={record.id}>
+              <span>{record.country} · {record.event_date}</span>
+              <h3>{record.market}</h3>
+              <p><strong>{record.label} {record.score}/100</strong> · {record.signal_type}</p>
+              <p>{record.claim}</p>
+              <p>{record.why_it_matters}</p>
+              <div className="heroActions">
+                <a href={record.primary_url} target="_blank" rel="noreferrer">Primary source →</a>
+                {record.corroborating_url ? <a href={record.corroborating_url} target="_blank" rel="noreferrer">Corroboration →</a> : null}
+              </div>
+            </article>
+          ))}
+        </div>
+        {watchForecasts.length ? <div className="intel">
+          <span className="kicker">FORECASTS — SEPARATE FROM FACTS</span>
+          {watchForecasts.map((record) => <article key={record.id}><h3>{record.market}: {record.label} {record.score}/100</h3><p>{record.claim}</p><p>{record.why_it_matters}</p><a href={record.primary_url} target="_blank" rel="noreferrer">Source →</a></article>)}
+        </div> : null}
       </section>
 
       <section className="section darkSection">
