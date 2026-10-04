@@ -16,6 +16,13 @@ try {
   sourceWatch = null;
 }
 
+let cronRoute = null;
+try {
+  cronRoute = await import("../app/api/perception-source-watch/route.js");
+} catch {
+  cronRoute = null;
+}
+
 test("Perception bridge sender module exists", () => {
   assert.ok(bridge, "scripts/perception-bridge.mjs must exist");
 });
@@ -161,4 +168,13 @@ test("runPerceptionSourceWatch sends only detected changes", async () => {
   assert.equal(result.failures.length, 0);
   assert.equal(delivered.length, 1);
   assert.equal(delivered[0].event_id, "source-change:changed:new");
+});
+
+test("Perception production cron route exists and validates CRON_SECRET", () => {
+  assert.ok(cronRoute, "app/api/perception-source-watch/route.js must exist");
+  assert.equal(typeof cronRoute?.isAuthorizedCron, "function");
+  assert.equal(cronRoute.isAuthorizedCron("Bearer cron-secret", "cron-secret"), true);
+  assert.equal(cronRoute.isAuthorizedCron("Bearer wrong", "cron-secret"), false);
+  assert.equal(cronRoute.isAuthorizedCron(null, "cron-secret"), false);
+  assert.equal(cronRoute.isAuthorizedCron("Bearer cron-secret", ""), false);
 });
