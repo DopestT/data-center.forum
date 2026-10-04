@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/perception-source-watch",
+      "schedule": "7 11 * * *"
+    }
+  ]
+}
