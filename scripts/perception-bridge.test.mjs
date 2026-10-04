@@ -9,6 +9,13 @@ try {
   bridge = null;
 }
 
+let sourceWatch = null;
+try {
+  sourceWatch = await import("./perception-source-watch.mjs");
+} catch {
+  sourceWatch = null;
+}
+
 test("Perception bridge sender module exists", () => {
   assert.ok(bridge, "scripts/perception-bridge.mjs must exist");
 });
@@ -99,4 +106,59 @@ test("sendPerceptionEvent rejects non-success bridge responses", async () => {
     }),
     /Perception bridge HTTP 401/,
   );
+});
+
+test("Perception scheduled source-watch module exists", () => {
+  assert.ok(sourceWatch, "scripts/perception-source-watch.mjs must exist");
+});
+
+test("runPerceptionSourceWatch sends only detected changes", async () => {
+  assert.equal(typeof sourceWatch?.runPerceptionSourceWatch, "function");
+
+  const registry = [
+    { id: "changed", publisher: "AWS", url: "https://example.com/changed" },
+    { id: "steady", publisher: "Google", url: "https://example.com/steady" },
+  ];
+  const snapshots = {
+    changed: { hash: "old" },
+    steady: { hash: "same" },
+  };
+  const delivered = [];
+
+  const result = await sourceWatch.runPerceptionSourceWatch({
+    registry,
+    snapshots,
+    detectedAt: "2026-10-04T21:20:00.000Z",
+    fetchContent: async (source) => `content:${source.id}`,
+    observeSourceImpl: (source, _content, snapshot, detectedAt) => {
+      if (source.id === "changed") {
+        return {
+          snapshot: { hash: "new" },
+          baseline: false,
+          change: {
+            source_id: source.id,
+            publisher: source.publisher,
+            url: source.url,
+            project_slugs: ["alpha"],
+            previous_hash: snapshot.hash,
+            current_hash: "new",
+            detected_at: detectedAt,
+          },
+        };
+      }
+      return { snapshot, baseline: false, change: null };
+    },
+    sendEvent: async (event) => {
+      delivered.push(event);
+      return { ok: true, observation_id: "obs-123" };
+    },
+  });
+
+  assert.equal(result.checked, 2);
+  assert.equal(result.observedCount, 2);
+  assert.equal(result.changeCount, 1);
+  assert.equal(result.deliveredCount, 1);
+  assert.equal(result.failures.length, 0);
+  assert.equal(delivered.length, 1);
+  assert.equal(delivered[0].event_id, "source-change:changed:new");
 });
