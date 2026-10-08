@@ -1,9 +1,9 @@
 # Intelligence source changes
 
-Detected: 2026-10-06T17:14:37.645Z
+Detected: 2026-10-08T17:53:53.007Z
 
-## SB Energy — openai-stargate-milam-county-1-2gw
-- Source: https://sbenergy.com/openai-and-softbank-group-partner-with-sb-energy/
+## Microsoft — microsoft-fairwater-mount-pleasant
+- Source: https://news.microsoft.com/source/2026/06/23/microsoft-completes-construction-on-first-datacenter-facility-in-mount-pleasant-wisconsin/
 - Status: needs verification
-- Previous fingerprint: 1df18453510a…
-- Current fingerprint: 2b264f480743…
+- Previous fingerprint: 8b3c59fd8e35…
+- Current fingerprint: cbf397ffbb75…
