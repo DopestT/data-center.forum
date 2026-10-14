@@ -15,7 +15,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     <main>
       <header className="topbar">
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
-        <nav><Link href="/database">Database</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
+        <nav><Link href="/database">Database</Link><Link href="/changes">Changes</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
       </header>
 
       <section className="commerceHero projectDetailHero">
@@ -24,6 +24,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <p>{project.summary}</p>
         <div className="heroActions">
           <a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Track with Pro Beta — $49/mo</a>
+          <Link href="/changes">See verified changes →</Link>
           <a href={project.source_url} target="_blank" rel="noreferrer">Open primary source →</a>
         </div>
       </section>
@@ -40,7 +41,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </div>
         {locationEvidence ? <p>{locationEvidence.areas.join("; ")}. {locationEvidence.note}</p> : null}
       </section>
-
 
       {(graph.participants.length > 0 || graph.facts.length > 0 || graph.events.length > 0) && (
         <section className="section intelligenceGraphSection">
@@ -121,7 +121,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <span className="kicker">WHY PRO BETA EXISTS</span>
         <h2>The database is free to search. Monitored research is paid.</h2>
         <p>Use public records for one-off research. Pro Beta is manually fulfilled: tell us what matters, and we maintain the watchlist, change digest, priority data requests, and CSV snapshots while the self-serve dashboard is completed.</p>
-        <div className="heroActions"><a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo</a><Link href="/database">Back to database →</Link></div>
+        <div className="heroActions"><a className="buttonLink" href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo</a><Link href="/changes">Recent changes →</Link><Link href="/database">Back to database →</Link></div>
       </section>
     </main>
   );
