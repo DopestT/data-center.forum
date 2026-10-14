@@ -13,6 +13,7 @@ export default async function Home() {
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
+          <Link href="/changes">Changes</Link>
           <Link href="/intelligence">Data</Link>
           <Link href="/vendors">Companies</Link>
           <Link href="/pricing">Pricing</Link>
@@ -27,6 +28,7 @@ export default async function Home() {
         <p>Search source-linked data-center projects by company, market, status, capacity, and investment. Public research stays free. Pro Beta is the paid monitoring layer while self-serve tracking is completed.</p>
         <div className="heroActions">
           <Link className="buttonLink" href="/database">Search the database</Link>
+          <Link href="/changes">See recent changes →</Link>
           <a href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo →</a>
         </div>
         <div className="signals">
