@@ -35,6 +35,7 @@ export default async function DatabasePage({
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
+          <Link href="/changes">Changes</Link>
           <Link href="/database/companies">Operators</Link>
           <Link href="/database/markets">Markets</Link>
           <Link href="/pricing">Pricing</Link>
@@ -48,6 +49,7 @@ export default async function DatabasePage({
         <p>Source-linked data-center projects organized by company, market, status, capacity, and investment. Every public record shows where the claim came from and when we last checked it.</p>
         <div className="heroActions">
           <a className="buttonLink" href="#results">Browse projects</a>
+          <Link href="/changes">See verified changes →</Link>
           <a href={checkoutLinks.pro} target="_blank" rel="noreferrer">Start Pro Beta — $49/mo →</a>
         </div>
       </section>
@@ -68,7 +70,7 @@ export default async function DatabasePage({
         <div className="browsePathGrid">
           <Link href="/database/companies"><span>OPERATORS</span><h3>Projects by company</h3><p>Roll the canonical project set up by primary operator.</p><strong>Browse operators →</strong></Link>
           <Link href="/database/markets"><span>MARKETS</span><h3>Projects by state</h3><p>See project concentration, operators, capacity, and investment signals by U.S. state.</p><strong>Browse markets →</strong></Link>
-          <Link href="/intelligence"><span>DATA PRODUCT</span><h3>Structured intelligence</h3><p>See exports, monitoring, source watches, and custom data access.</p><strong>See data access →</strong></Link>
+          <Link href="/changes"><span>CHANGES</span><h3>Verified project updates</h3><p>Follow material changes only after they have been reviewed and added to the intelligence record.</p><strong>See recent changes →</strong></Link>
         </div>
       </section>
 
