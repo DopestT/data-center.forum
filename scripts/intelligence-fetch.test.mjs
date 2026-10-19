@@ -34,6 +34,9 @@ test("safe URL validation rejects private, metadata, loopback and unsupported ta
   await assert.rejects(() => assertSafeUrl("https://private.example/file", async () => [{ address: "10.0.0.8", family: 4 }]), /unsafe/i);
   await assert.rejects(() => assertSafeUrl("https://metadata.example/file", async () => [{ address: "169.254.169.254", family: 4 }]), /unsafe/i);
   await assert.rejects(() => assertSafeUrl("https://ipv6.example/file", async () => [{ address: "::1", family: 6 }]), /unsafe/i);
+  await assert.rejects(() => assertSafeUrl("https://mapped-loopback.example/file", async () => [{ address: "::ffff:127.0.0.1", family: 6 }]), /unsafe/i);
+  await assert.rejects(() => assertSafeUrl("https://mapped-private.example/file", async () => [{ address: "::ffff:10.0.0.8", family: 6 }]), /unsafe/i);
+  await assert.rejects(() => assertSafeUrl("https://multicast.example/file", async () => [{ address: "ff02::1", family: 6 }]), /unsafe/i);
 });
 
 test("fetcher validates every redirect before following it", async () => {
@@ -59,13 +62,42 @@ test("fetcher enforces byte cap and default is 5 MB", async () => {
   );
 });
 
-test("fetcher times out without hanging the batch", async () => {
+test("fetcher times out before response headers without hanging the batch", async () => {
   const { fetchSource } = await loadModule();
   const fetchImpl = (_url, { signal }) => new Promise((_resolve, reject) => {
     signal.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" })), { once: true });
   });
   await assert.rejects(
     () => fetchSource({ url: "https://example.com/slow" }, { resolver: publicResolver, fetchImpl, timeoutMs: 5, maxAttempts: 1 }),
+    /timeout/i
+  );
+});
+
+test("fetcher deadline remains active while the response body streams", async () => {
+  const { fetchSource } = await loadModule();
+  const fetchImpl = async (_url, { signal }) => ({
+    status: 200,
+    ok: true,
+    headers: { get: (name) => String(name).toLowerCase() === "content-type" ? "text/html" : null },
+    body: {
+      getReader() {
+        return {
+          read() {
+            return new Promise((resolve, reject) => {
+              const timer = setTimeout(() => resolve({ done: true, value: undefined }), 40);
+              signal.addEventListener("abort", () => {
+                clearTimeout(timer);
+                reject(Object.assign(new Error("aborted while streaming"), { name: "AbortError" }));
+              }, { once: true });
+            });
+          },
+          async cancel() {},
+        };
+      },
+    },
+  });
+  await assert.rejects(
+    () => fetchSource({ url: "https://example.com/slow-body" }, { resolver: publicResolver, fetchImpl, timeoutMs: 5, maxAttempts: 1 }),
     /timeout/i
   );
 });
