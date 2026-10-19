@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "intel:export": "node scripts/export-intelligence.mjs",
-    "intel:scan": "node scripts/scan-intelligence.mjs"
+    "intel:scan": "node scripts/scan-intelligence.mjs",
+    "intel:sources:import": "node scripts/import-intelligence-sources.mjs",
+    "intel:test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.5",
