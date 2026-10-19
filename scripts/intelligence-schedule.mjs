@@ -7,7 +7,7 @@ const REFRESH_INTERVALS_MS = Object.freeze({
 
 export function refreshIntervalMs(refreshClass) {
   const interval = REFRESH_INTERVALS_MS[String(refreshClass ?? "")];
-  if (!interval) throw new Error(`Unknown refresh class: ${refreshClass}`);
+  if (!interval) throw new Error(`Unknown refresh_class: ${refreshClass}`);
   return interval;
 }
 
