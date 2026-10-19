@@ -9,6 +9,7 @@
     "intel:export": "node scripts/export-intelligence.mjs",
     "intel:scan": "node scripts/scan-intelligence.mjs",
     "intel:sources:import": "node scripts/import-intelligence-sources.mjs",
+    "intel:ingest": "node scripts/intelligence-ingest.mjs",
     "intel:test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
