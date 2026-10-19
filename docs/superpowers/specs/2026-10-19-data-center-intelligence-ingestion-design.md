@@ -65,6 +65,7 @@ Each source record stores at minimum:
 - optional `project_hint`
 - `refresh_class`
 - `enabled`
+- `next_due_at`
 - `last_success_at`
 - `last_failure_at`
 - `consecutive_failures`
@@ -78,16 +79,24 @@ Use four refresh classes instead of one daily cadence:
 - **daily:** once per day for slower public records
 - **weekly:** once per week for low-change reference sources
 
-GitHub Actions remains acceptable for the first implementation, but each run must select only sources whose refresh class is due. The schema and runner interface must not depend on GitHub Actions so the scheduler can later move to a dedicated worker without changing ingestion semantics.
+The first implementation keeps GitHub Actions as the scheduler and runs the dispatcher once per hour at minute 17. Each run selects only enabled sources with `next_due_at <= now()`. The runner interface must not depend on GitHub Actions so the scheduler can later move to a dedicated worker without changing ingestion semantics.
 
 ## Storage Architecture
 
 Operational ingestion moves into the existing Supabase/Postgres stack. Repository JSON remains only for static fallback fixtures and migration/seed support, not as the long-term queue or raw snapshot system.
 
+Raw source bodies are stored in a private Supabase Storage bucket named `intel-source-snapshots`. Postgres stores the object path, content hash, MIME type, byte size, and fetch metadata. The bucket is service-role only; public clients receive no direct raw-snapshot access.
+
 ### Core tables
 
 #### `intel_sources`
 Canonical source registry and scheduler metadata.
+
+Indexes:
+
+- `(enabled, next_due_at)` for due-source selection
+- unique normalized source URL
+- `(source_type, authority_tier)` for operational filtering
 
 #### `intel_source_fetches`
 One row per fetch attempt:
@@ -100,7 +109,14 @@ One row per fetch attempt:
 - fetch duration
 - success/failure state
 - error classification
-- raw snapshot reference
+- snapshot object path
+- response byte size
+- content type
+
+Indexes:
+
+- `(source_id, fetched_at desc)`
+- content hash for repeated-content detection
 
 #### `intel_raw_observations`
 Immutable extracted observations from fetched content. An observation represents what a source appeared to say at a specific time.
@@ -156,11 +172,12 @@ Claim fields include:
 Many-to-many link between claims and observations, including whether evidence supports, contradicts, or supersedes the claim.
 
 #### `intel_events`
-Publishable intelligence events derived from verified or explicitly approved claims. This becomes the common event source for `/changes`, project timelines, alerts, and the news chyron.
+Publishable intelligence events derived from verified claims. This becomes the common event source for `/changes`, project timelines, alerts, and the news chyron.
 
 Required event fields:
 
 - `id`
+- stable `event_key`
 - event type
 - headline
 - summary
@@ -171,6 +188,8 @@ Required event fields:
 - primary source
 - evidence count
 - public visibility
+
+`event_key` is unique so repeated ingestion of the same verified change cannot publish duplicate events.
 
 ## Verification States
 
@@ -195,7 +214,9 @@ Evidence ranking is claim-specific:
 - **Tier 3:** reputable industry/local reporting used for corroboration or discovery.
 - **Tier 4:** unattributed, reposted, social-only, or otherwise weak signals; discovery only.
 
-A Tier 1 source can verify a claim when it has direct authority over that exact fact. Otherwise verification requires corroboration or manual approval.
+A Tier 1 source can verify a claim when it has direct authority over that exact fact. Otherwise verification requires at least two independent supporting sources with one at Tier 1 or Tier 2, or an authenticated staff verification action.
+
+Manual verification records the acting user, timestamp, previous state, new state, and reason.
 
 ## Ingestion Flow
 
@@ -205,11 +226,19 @@ Registry-driven scheduled fetches collect official sources. Discovery feeds may 
 
 ### 2. Fetch and snapshot
 
-The fetcher records status, headers, content hash, and a raw snapshot reference. A source failure affects only that source. Batch execution continues.
+The fetcher records status, headers, content hash, and a private raw snapshot. A source failure affects only that source. Batch execution continues.
+
+Fetcher limits for V1:
+
+- maximum 20 concurrent source requests per runner
+- 20-second request timeout
+- maximum 5 MB response body after redirects
+- maximum 5 redirects
+- HTTPS only, except explicitly allowlisted HTTP government sources
 
 ### 3. Extract
 
-Content extraction produces structured observations instead of only a page-level hash change. Existing fingerprinting remains useful as a cheap change gate: unchanged content can skip expensive extraction.
+Content extraction produces structured observations instead of only a page-level hash change. Existing fingerprinting remains useful as a cheap change gate: unchanged content skips full extraction unless the source adapter explicitly requires periodic re-extraction.
 
 ### 4. Resolve entities
 
@@ -221,7 +250,7 @@ Resolution order:
 4. bounded fuzzy match
 5. unresolved candidate for review
 
-No fuzzy match may silently merge two canonical entities.
+Automatic fuzzy linking is permitted only at confidence >= 0.95 and only when no competing candidate is within 0.05 confidence points. Otherwise the observation remains unresolved for review. Fuzzy resolution never merges or deletes canonical entities.
 
 ### 5. Build claims
 
@@ -233,7 +262,7 @@ Verification evaluates authority tier, evidence agreement, conflicts, freshness,
 
 ### 7. Publish events
 
-A material verified change produces an `intel_events` row. Event generation is idempotent using a stable event key derived from entity, claim type, normalized value, and verification boundary.
+A material verified change produces an `intel_events` row. Event generation is idempotent using `event_key`, derived from entity id + claim type + normalized value + effective date/verification boundary.
 
 ### 8. Update public projections
 
@@ -278,7 +307,7 @@ Only critical/high/medium verified events are eligible for the default news chyr
 
 Render a reusable `NewsChyron` immediately below the global site header/navigation treatment on public pages.
 
-Because headers are currently repeated in individual pages rather than centralized in `app/layout.tsx`, implementation should not duplicate the ticker into every page. First create a shared public chrome component used by existing pages, or mount the ticker globally in layout in a way that does not conflict with admin/auth routes. The implementation plan must choose the smallest safe refactor after enumerating route usage.
+Because headers are currently repeated in individual pages rather than centralized in `app/layout.tsx`, implementation must avoid duplicating ticker logic into every route. The implementation plan must enumerate current topbar routes and choose the smallest safe shared-chrome refactor or layout-level mounting strategy that excludes admin/auth surfaces.
 
 ### Content
 
@@ -298,13 +327,15 @@ Click target goes to the related project/event record, not directly to an extern
 - compact single-line horizontal presentation on mobile
 - pause on pointer hover/focus when supported
 - keyboard-accessible links
-- respect `prefers-reduced-motion`; reduced-motion users see a static horizontally scrollable list or rotating non-animated items
+- respect `prefers-reduced-motion`; reduced-motion users see a static horizontally scrollable list
 - no modal, overlay, or content obstruction
 - no unverified detections
 
 ### Empty/failure state
 
-If no eligible verified events are available, render either no ticker or a stable non-news label such as `DATA CENTER INTELLIGENCE · SOURCE-LINKED PROJECT DATA`; do not synthesize filler headlines.
+If no eligible verified events are available, render the stable non-news label `DATA CENTER INTELLIGENCE · SOURCE-LINKED PROJECT DATA`. Never synthesize filler headlines.
+
+If the event query fails, use the current verified static/project-graph event fallback if available; otherwise render the same stable non-news label.
 
 ## Public Read Model
 
@@ -312,57 +343,61 @@ If no eligible verified events are available, render either no ticker or a stabl
 
 Add a focused `lib/intelligence-events.ts` read module for verified event queries. It must centralize chyron and Changes-feed filtering so the two surfaces cannot drift on verification policy.
 
-`/changes` should migrate from assembling events by loading every project graph to querying the verified event read model directly once `intel_events` is populated.
+`lib/intelligence-events.ts` reads `intel_events` first and falls back to the existing verified project-graph events when Supabase is unavailable or the event migration is not complete.
+
+`/changes` migrates from assembling events by loading every project graph to querying this verified event read model directly once `intel_events` is populated.
 
 ## Source Growth Workflow
 
 Source expansion must be data-driven rather than code-driven.
 
 1. Add/update source rows in `intel_sources`.
-2. Scheduler discovers due sources.
+2. Scheduler selects due sources by `next_due_at`.
 3. Fetcher runs source adapters based on source type.
 4. Generic HTML remains the fallback adapter.
 5. Source-specific adapters may be added only when generic extraction cannot reliably capture the needed record structure.
 
-Bulk import supports CSV/JSON source manifests with validation before activation.
+Bulk import supports CSV/JSON source manifests. Imports are validated and inserted disabled by default; an explicit activation step enables them after validation.
 
 ## Failure Handling
 
 - One failing source never aborts a batch.
-- Exponential backoff applies after repeated failures.
-- Permanent failures are disabled only after a threshold and recorded reason.
-- HTTP 429/503 are classified as retryable.
+- Retryable HTTP/network failures receive up to 3 attempts with exponential backoff and jitter in the current run.
+- HTTP 408, 425, 429, and 5xx responses are retryable; most other 4xx responses are non-retryable for that run.
+- A source is automatically paused after 10 consecutive failed scheduled runs. The pause reason is recorded and staff can re-enable it after correction.
 - Extraction errors preserve the raw fetch and do not create observations.
-- Entity-resolution uncertainty never creates automatic merges below the configured confidence threshold.
+- Entity-resolution uncertainty never creates automatic merges below the specified 0.95 threshold.
 - Database write failures prevent publication; no public page should infer verification from partially written ingestion state.
-- Event publication uses transactions where claim verification and event creation must be atomic.
+- Claim verification and event publication occur in one database transaction when the event is generated from that transition.
 
 ## Security and Data Integrity
 
 - Service-role credentials remain server-side only.
 - Public clients receive read-only public projections, never ingestion tables.
 - Row-level security blocks public mutation of intelligence tables.
+- The raw snapshot bucket is private and service-role only.
 - Raw HTML/text is treated as untrusted content; extraction must not execute source scripts.
-- Fetcher follows bounded redirects, enforces size/time limits, and rejects unsupported protocols.
-- Source URL allow/deny controls prevent ingestion from becoming an arbitrary internal-network fetch proxy.
+- Fetcher rejects localhost, loopback, link-local, RFC1918/private, and cloud metadata destinations after DNS resolution and on redirects.
+- Fetcher follows the redirect/size/time limits defined above and rejects unsupported protocols.
 - Manual verification actions require authenticated staff authorization and are auditable.
 
 ## Performance Targets
 
 Initial target: 1,000 enabled sources.
 
-- due-source selection must not scan all historical fetch rows
-- source fetches execute with bounded concurrency
+- due-source selection uses the `(enabled, next_due_at)` index rather than scanning fetch history
+- source fetches execute at maximum concurrency 20 per runner
 - unchanged sources skip full extraction where possible
-- public chyron query should return at most 20 eligible events
-- normal public page rendering must not synchronously perform source ingestion
-- raw snapshots must not be bundled into the Next.js application build
+- public chyron query returns at most 20 eligible events
+- normal public page rendering never performs source ingestion synchronously
+- raw snapshots are never bundled into the Next.js application build
+- event/chyron queries should remain bounded by indexed filters on verification status, visibility, materiality, and verified timestamp
 
 ## Migration Strategy
 
 ### Phase 1 — Schema and compatibility
 
-- add ingestion/event tables and indexes
+- add ingestion/event tables, enums, RLS, storage bucket policy, and indexes
 - add read/write adapters
 - seed current source registry into `intel_sources`
 - preserve current JSON source watcher and static public fallback during migration
@@ -397,9 +432,10 @@ Initial target: 1,000 enabled sources.
 
 - source due-time calculation
 - fingerprint change gate
+- response size/redirect safety
 - observation normalization
 - entity alias matching
-- fuzzy-match refusal/threshold behavior
+- fuzzy-match acceptance/refusal behavior
 - duplicate collapse
 - claim conflict handling
 - verification-state transitions
@@ -409,26 +445,30 @@ Initial target: 1,000 enabled sources.
 
 ### Integration tests
 
-- fetch → observation → claim → verification → event
+- fetch → snapshot → observation → claim → verification → event
 - repeated identical source fetch creates no duplicate event
 - conflicting source preserves current verified public claim
 - database unavailable causes public intelligence reads to use static fallback where supported
 - one source failure does not abort batch
+- retry exhaustion and auto-pause behavior
+- private/internal network fetch targets are rejected
 - reduced-motion chyron rendering path
 
 ### Acceptance tests
 
 - `/changes` and NewsChyron show only verified events
 - chyron links resolve to internal records with source provenance
-- admin/raw ingestion records are not publicly writable or exposed
+- admin/raw ingestion records and snapshot objects are not publicly writable or exposed
 - a known official page change can be ingested and held for verification without appearing publicly
 - a verified event becomes visible on both `/changes` and the chyron without duplicate publication
+- no eligible events renders the stable intelligence label instead of fake news content
 
 ## Operational Metrics
 
 Track at minimum:
 
 - enabled sources
+- paused sources
 - fetch success rate
 - fetch latency
 - retryable/permanent failure counts
@@ -448,6 +488,7 @@ Included:
 
 - 500-1,000 source-ready architecture
 - Supabase/Postgres operational ingestion model
+- private Supabase Storage snapshots
 - typed source registry and refresh classes
 - normalized observations, entities, claims, evidence, and events
 - verification policy
@@ -470,14 +511,15 @@ Not included in V1:
 V1 is complete when:
 
 1. Current official sources are seeded into the new registry.
-2. The ingestion runner can process due sources with bounded concurrency and isolate failures.
-3. Fetches and immutable observations are stored in Postgres.
-4. Observations resolve to canonical entities or remain explicitly unresolved.
-5. Claims preserve evidence and conflicts.
-6. Verification transitions are auditable.
-7. Verified material changes generate idempotent public events.
-8. `/changes` and the site-wide chyron consume the same verified event read model.
-9. Unverified detections never appear on public surfaces.
-10. The existing public verified fallback remains functional when the database is unavailable.
-11. Automated tests cover the critical ingestion and publication paths.
-12. The system is structurally ready for 500-1,000 monitored sources without adding one code path per source.
+2. The ingestion runner can process due sources with maximum concurrency 20 and isolate failures.
+3. Fetch metadata is stored in Postgres and raw source bodies are stored in the private snapshot bucket.
+4. Immutable observations are stored in Postgres.
+5. Observations resolve to canonical entities or remain explicitly unresolved.
+6. Claims preserve evidence and conflicts.
+7. Verification transitions are auditable.
+8. Verified material changes generate idempotent public events.
+9. `/changes` and the site-wide chyron consume the same verified event read model.
+10. Unverified detections never appear on public surfaces.
+11. The existing public verified fallback remains functional when the database is unavailable.
+12. Automated tests cover the critical ingestion and publication paths.
+13. The system is structurally ready for 500-1,000 monitored sources without adding one code path per source.
