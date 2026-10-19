@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../components/PublicTopbar";
 import Link from "next/link";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
 import { jobPlans } from "../../lib/monetization";
@@ -15,7 +16,7 @@ async function getJobs(): Promise<Job[]> {
 export default async function JobsPage({ searchParams }: { searchParams: Promise<{ submitted?: string }> }) {
   const [jobs, query] = await Promise.all([getJobs(), searchParams]);
   return <main>
-    <header className="topbar"><Link className="brand" href="/">DataCenter<span>.forum</span></Link><nav><Link href="/vendors">Vendors</Link><Link href="/jobs">Jobs</Link><Link href="/partners">Partners</Link></nav></header>
+    <PublicTopbar><Link className="brand" href="/">DataCenter<span>.forum</span></Link><nav><Link href="/vendors">Vendors</Link><Link href="/jobs">Jobs</Link><Link href="/partners">Partners</Link></nav></PublicTopbar>
     <section className="commerceHero"><span className="kicker">DATA CENTER CAREERS</span><h1>Jobs for people who keep critical infrastructure running.</h1><p>Operators, technicians, commissioning, controls, power, cooling, networking, construction and commercial roles. No generic tech-job flood.</p><div className="heroActions"><a className="buttonLink" href="#post">Post a job</a><a href="#openings">Browse openings →</a></div></section>
     <section className="section compactSection"><div className="pricingGrid">{jobPlans.map(plan => <article className="priceCard" key={plan.name}><span>{plan.name}</span><h3>{plan.price}</h3><p>{plan.detail}</p></article>)}</div></section>
     <section id="openings" className="section darkSection"><div className="sectionHead"><div><span className="kicker">OPEN ROLES</span><h2>Current listings</h2></div><span className="mutedText">{jobs.length} live</span></div>{jobs.length ? <div className="jobList">{jobs.map(job => <article className={`jobCard ${job.plan === "featured" ? "featuredJob" : ""}`} key={job.id}><div><div className="vendorBadges">{job.plan === "featured" && <span>FEATURED</span>}{job.employer_type && <span>{job.employer_type}</span>}</div><h3>{job.title}</h3><p>{job.company_name}{job.location ? ` · ${job.location}` : ""}</p>{job.compensation && <strong>{job.compensation}</strong>}</div><a className="buttonLink secondaryButton" href={job.apply_url} target="_blank" rel="noreferrer">Apply ↗</a></article>)}</div> : <div className="emptyState"><span className="kicker">EMPLOYER INVENTORY OPEN</span><h3>No job has been published yet.</h3><p>The first listings will be real paid or approved openings only.</p><a className="buttonLink" href="#post">Post the first job</a></div>}</section>

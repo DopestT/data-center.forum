@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../../components/PublicTopbar";
 import Link from "next/link";
 import { marketPages, projectsForMarket, knownCapacity } from "../../../lib/intelligence-indexes";
 import { formatCapacity } from "../../../lib/intelligence";
@@ -5,10 +6,10 @@ import { formatCapacity } from "../../../lib/intelligence";
 export default function MarketIndexPage() {
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav><Link href="/database">Database</Link><Link href="/database/companies">Operators</Link><Link href="/database/markets">Markets</Link><Link href="/intelligence">Data</Link></nav>
-      </header>
+      </PublicTopbar>
       <section className="commerceHero">
         <span className="kicker">MARKET INTELLIGENCE</span>
         <h1>Data-center projects by state.</h1>

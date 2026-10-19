@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../components/PublicTopbar";
 import Link from "next/link";
 import { checkoutLinks } from "../../lib/monetization";
 import { formatCapacity, formatVerified, getProjects } from "../../lib/intelligence";
@@ -31,7 +32,7 @@ export default async function DatabasePage({
 
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
@@ -41,7 +42,7 @@ export default async function DatabasePage({
           <Link href="/pricing">Pricing</Link>
           <Link href="/jobs">Jobs</Link>
         </nav>
-      </header>
+      </PublicTopbar>
 
       <section className="commerceHero databaseHero">
         <span className="kicker">PROJECT & POWER DATABASE</span>

@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../components/PublicTopbar";
 import Link from "next/link";
 import { checkoutLinks } from "../../lib/monetization";
 
@@ -31,10 +32,10 @@ const plans = [
 export default function PricingPage() {
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav><Link href="/database">Database</Link><Link href="/intelligence">Data</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
-      </header>
+      </PublicTopbar>
 
       <section className="commerceHero">
         <span className="kicker">SIMPLE PRICING</span>

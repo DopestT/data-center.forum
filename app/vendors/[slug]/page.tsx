@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../../components/PublicTopbar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createSupabaseServerClient } from "../../../lib/supabase/server";
@@ -32,7 +33,7 @@ export default async function VendorPage({ params, searchParams }: { params: Pro
 
   return (
     <main>
-      <header className="topbar"><Link className="brand" href="/">DataCenter<span>.forum</span></Link><nav><Link href="/vendors">Vendors</Link><Link href="/jobs">Jobs</Link><Link href="/partners">Partners</Link></nav></header>
+      <PublicTopbar><Link className="brand" href="/">DataCenter<span>.forum</span></Link><nav><Link href="/vendors">Vendors</Link><Link href="/jobs">Jobs</Link><Link href="/partners">Partners</Link></nav></PublicTopbar>
       <section className="commerceHero vendorProfileHero">
         <div className="vendorBadges">{vendor.is_verified && <span>VERIFIED</span>}{vendor.is_founding_partner && <span>FOUNDING PARTNER</span>}</div>
         <h1>{vendor.name}</h1>

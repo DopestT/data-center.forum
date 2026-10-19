@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../components/PublicTopbar";
 import Link from "next/link";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
 import { checkoutLinks, vendorCategories } from "../../lib/monetization";
@@ -34,10 +35,10 @@ export default async function VendorsPage({ searchParams }: { searchParams: Prom
 
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav><Link href="/database">Database</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link><Link href="/jobs">Jobs</Link></nav>
-      </header>
+      </PublicTopbar>
 
       <section className="commerceHero">
         <span className="kicker">COMPANY DATABASE</span>
