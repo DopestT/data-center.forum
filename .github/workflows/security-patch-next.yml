@@ -1,0 +1,36 @@
+name: Patch Next Security Advisories
+
+on:
+  push:
+    branches:
+      - feature/intelligence-ingestion-v1
+    paths:
+      - .github/workflows/security-patch-next.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/intelligence-ingestion-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install next@16.4.2 --save-exact
+      - run: npm audit --omit=dev --audit-level=critical
+      - run: npm run intel:test
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - name: Commit audited dependency patch
+        run: |
+          git config user.name "datacenter-intelligence-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add package.json package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "fix: update Next.js past critical advisory range"
+            git push origin HEAD:feature/intelligence-ingestion-v1
+          fi
