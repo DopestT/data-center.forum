@@ -19,24 +19,41 @@ function snapshotPath(sourceId, fetchId, now, contentType) {
   return `${sourceId}/${date.getUTCFullYear()}/${String(date.getUTCMonth() + 1).padStart(2, "0")}/${fetchId}.${extension}`;
 }
 
-async function processSource({ source, db, storage, fetchSourceImpl, now }) {
+async function processSource({ source, db, storage, fetchSourceImpl, extractContentImpl, now }) {
   const observedAt = now.toISOString();
   const fetchId = crypto.randomUUID();
   let fetchResult = null;
   let extractionVersion = null;
   let hash = null;
   let snapshotObjectPath = null;
-  let state = "fetch_error";
+  let failureState = "fetch_error";
+  let fetchRecorded = false;
 
   try {
     fetchResult = await fetchSourceImpl(source);
-    const extracted = extractContent(fetchResult.body, fetchResult.finalUrl || source.url);
+
+    failureState = "extract_error";
+    let extracted;
+    try {
+      extracted = extractContentImpl(fetchResult.body, fetchResult.finalUrl || source.url);
+    } catch (extractionError) {
+      snapshotObjectPath = snapshotPath(source.id, fetchId, now, fetchResult.contentType);
+      try {
+        await storage.upload(snapshotObjectPath, fetchResult.body, { contentType: fetchResult.contentType ?? "text/html" });
+      } catch (storageError) {
+        failureState = "storage_error";
+        throw storageError;
+      }
+      throw extractionError;
+    }
+
     extractionVersion = extracted.extraction_version;
     hash = contentHash(extracted.text);
+
+    failureState = "db_error";
     const previous = await db.getLastSuccessfulFetch(source.id);
 
     if (previous?.content_hash === hash) {
-      state = "unchanged";
       await db.recordFetch({
         id: fetchId,
         source_id: source.id,
@@ -46,25 +63,28 @@ async function processSource({ source, db, storage, fetchSourceImpl, now }) {
         content_hash: hash,
         extraction_version: extractionVersion,
         duration_ms: fetchResult.durationMs ?? null,
-        state,
+        state: "unchanged",
         error_class: null,
         error_message: null,
         snapshot_object_path: null,
         response_byte_size: fetchResult.byteSize ?? null,
         content_type: fetchResult.contentType ?? null,
       });
+      fetchRecorded = true;
       await db.updateSource(source.id, {
         last_success_at: observedAt,
         consecutive_failures: 0,
         pause_reason: null,
         next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
       });
-      return { state };
+      return { state: "unchanged" };
     }
 
+    failureState = "storage_error";
     snapshotObjectPath = snapshotPath(source.id, fetchId, now, fetchResult.contentType);
     await storage.upload(snapshotObjectPath, fetchResult.body, { contentType: fetchResult.contentType ?? "text/html" });
-    state = "success";
+
+    failureState = "db_error";
     await db.recordFetch({
       id: fetchId,
       source_id: source.id,
@@ -74,13 +94,14 @@ async function processSource({ source, db, storage, fetchSourceImpl, now }) {
       content_hash: hash,
       extraction_version: extractionVersion,
       duration_ms: fetchResult.durationMs ?? null,
-      state,
+      state: "success",
       error_class: null,
       error_message: null,
       snapshot_object_path: snapshotObjectPath,
       response_byte_size: fetchResult.byteSize ?? null,
       content_type: fetchResult.contentType ?? null,
     });
+    fetchRecorded = true;
 
     const observations = extractObservations(source, extracted, {
       id: fetchId,
@@ -95,11 +116,11 @@ async function processSource({ source, db, storage, fetchSourceImpl, now }) {
       pause_reason: null,
       next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
     });
-    return { state, observationCount: observations.length };
+    return { state: "success", observationCount: observations.length };
   } catch (error) {
     const failures = Number(source?.consecutive_failures ?? 0) + 1;
     const pause = failures >= 10;
-    await db.recordFetch({
+    const failureRow = {
       id: fetchId,
       source_id: source.id,
       fetched_at: observedAt,
@@ -108,24 +129,49 @@ async function processSource({ source, db, storage, fetchSourceImpl, now }) {
       content_hash: hash,
       extraction_version: extractionVersion,
       duration_ms: fetchResult?.durationMs ?? null,
-      state,
+      state: failureState,
       error_class: error?.name ?? "Error",
       error_message: error instanceof Error ? error.message : String(error),
       snapshot_object_path: snapshotObjectPath,
       response_byte_size: fetchResult?.byteSize ?? null,
       content_type: fetchResult?.contentType ?? null,
-    });
-    await db.updateSource(source.id, {
-      last_failure_at: observedAt,
-      consecutive_failures: failures,
-      ...(pause ? { enabled: false, pause_reason: "Paused after 10 consecutive scheduled-run failures" } : {}),
-      next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
-    });
+    };
+
+    try {
+      if (fetchRecorded && typeof db.updateFetch === "function") {
+        const { id: _id, ...failurePatch } = failureRow;
+        await db.updateFetch(fetchId, failurePatch);
+      } else {
+        await db.recordFetch(failureRow);
+      }
+    } catch {
+      // Failure telemetry is best-effort; never let it abort neighboring sources.
+    }
+
+    try {
+      await db.updateSource(source.id, {
+        last_failure_at: observedAt,
+        consecutive_failures: failures,
+        ...(pause ? { enabled: false, pause_reason: "Paused after 10 consecutive scheduled-run failures" } : {}),
+        next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
+      });
+    } catch {
+      // Source-state bookkeeping is also isolated from the rest of the batch.
+    }
+
     return { state: "failed", error: error instanceof Error ? error.message : String(error) };
   }
 }
 
-export async function runIngestionBatch({ sources, db, storage, fetchSourceImpl = fetchSource, now = new Date(), concurrency = 20 }) {
+export async function runIngestionBatch({
+  sources,
+  db,
+  storage,
+  fetchSourceImpl = fetchSource,
+  extractContentImpl = extractContent,
+  now = new Date(),
+  concurrency = 20,
+}) {
   if (!Array.isArray(sources)) throw new Error("sources must be an array");
   const workerCount = Math.max(1, Math.min(20, Number(concurrency) || 1, Math.max(1, sources.length)));
   let cursor = 0;
@@ -136,7 +182,14 @@ export async function runIngestionBatch({ sources, db, storage, fetchSourceImpl 
       const index = cursor;
       cursor += 1;
       if (index >= sources.length) return;
-      results[index] = await processSource({ source: sources[index], db, storage, fetchSourceImpl, now });
+      results[index] = await processSource({
+        source: sources[index],
+        db,
+        storage,
+        fetchSourceImpl,
+        extractContentImpl,
+        now,
+      });
     }
   }
 
@@ -169,6 +222,10 @@ function createSupabaseAdapters(supabase) {
         const { error } = await supabase.from("intel_source_fetches").insert(row);
         if (error) throw error;
         return row;
+      },
+      async updateFetch(fetchId, patch) {
+        const { error } = await supabase.from("intel_source_fetches").update(patch).eq("id", fetchId);
+        if (error) throw error;
       },
       async recordObservations(rows) {
         if (!rows.length) return;
