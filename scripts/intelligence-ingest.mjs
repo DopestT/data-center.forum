@@ -19,7 +19,74 @@ function snapshotPath(sourceId, fetchId, now, contentType) {
   return `${sourceId}/${date.getUTCFullYear()}/${String(date.getUTCMonth() + 1).padStart(2, "0")}/${fetchId}.${extension}`;
 }
 
-async function processSource({ source, db, storage, fetchSourceImpl, now }) {
+function fetchRow({ source, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath }) {
+  return {
+    id: fetchId,
+    source_id: source.id,
+    fetched_at: observedAt,
+    final_url: fetchResult?.finalUrl || source.url,
+    http_status: fetchResult?.status ?? null,
+    content_hash: hash,
+    extraction_version: extractionVersion,
+    duration_ms: fetchResult?.durationMs ?? null,
+    state,
+    error_class: error ? (error?.name ?? "Error") : null,
+    error_message: error ? (error instanceof Error ? error.message : String(error)) : null,
+    snapshot_object_path: snapshotObjectPath,
+    response_byte_size: fetchResult?.byteSize ?? null,
+    content_type: fetchResult?.contentType ?? null,
+  };
+}
+
+async function recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath, now }) {
+  const failures = Number(source?.consecutive_failures ?? 0) + 1;
+  const pause = failures >= 10;
+  let loggingError = null;
+  let sourceUpdateError = null;
+
+  try {
+    await db.recordFetch(fetchRow({
+      source, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath,
+    }));
+  } catch (recordError) {
+    loggingError = recordError instanceof Error ? recordError.message : String(recordError);
+  }
+
+  try {
+    await db.updateSource(source.id, {
+      last_failure_at: observedAt,
+      consecutive_failures: failures,
+      ...(pause ? { enabled: false, pause_reason: "Paused after 10 consecutive scheduled-run failures" } : {}),
+      next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
+    });
+  } catch (updateError) {
+    sourceUpdateError = updateError instanceof Error ? updateError.message : String(updateError);
+  }
+
+  return {
+    state: "failed",
+    failureState: state,
+    error: error instanceof Error ? error.message : String(error),
+    ...(loggingError ? { loggingError } : {}),
+    ...(sourceUpdateError ? { sourceUpdateError } : {}),
+  };
+}
+
+async function updateSourceSuccess(db, source, observedAt, now) {
+  try {
+    await db.updateSource(source.id, {
+      last_success_at: observedAt,
+      consecutive_failures: 0,
+      pause_reason: null,
+      next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
+    });
+    return null;
+  } catch (error) {
+    return error instanceof Error ? error.message : String(error);
+  }
+}
+
+async function processSource({ source, db, storage, fetchSourceImpl, extractContentImpl, now }) {
   const observedAt = now.toISOString();
   const fetchId = crypto.randomUUID();
   let fetchResult = null;
@@ -30,102 +97,94 @@ async function processSource({ source, db, storage, fetchSourceImpl, now }) {
 
   try {
     fetchResult = await fetchSourceImpl(source);
-    const extracted = extractContent(fetchResult.body, fetchResult.finalUrl || source.url);
+  } catch (error) {
+    return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath, now });
+  }
+
+  let extracted;
+  state = "extract_error";
+  try {
+    extracted = extractContentImpl(fetchResult.body, fetchResult.finalUrl || source.url);
     extractionVersion = extracted.extraction_version;
     hash = contentHash(extracted.text);
-    const previous = await db.getLastSuccessfulFetch(source.id);
-
-    if (previous?.content_hash === hash) {
-      state = "unchanged";
-      await db.recordFetch({
-        id: fetchId,
-        source_id: source.id,
-        fetched_at: observedAt,
-        final_url: fetchResult.finalUrl || source.url,
-        http_status: fetchResult.status,
-        content_hash: hash,
-        extraction_version: extractionVersion,
-        duration_ms: fetchResult.durationMs ?? null,
-        state,
-        error_class: null,
-        error_message: null,
-        snapshot_object_path: null,
-        response_byte_size: fetchResult.byteSize ?? null,
-        content_type: fetchResult.contentType ?? null,
+  } catch (error) {
+    try {
+      snapshotObjectPath = snapshotPath(source.id, fetchId, now, fetchResult.contentType);
+      await storage.upload(snapshotObjectPath, fetchResult.body, { contentType: fetchResult.contentType ?? "text/html" });
+    } catch (storageError) {
+      return recordFailure({
+        source, db, fetchId, observedAt, fetchResult, hash, extractionVersion,
+        state: "storage_error", error: storageError, snapshotObjectPath: null, now,
       });
-      await db.updateSource(source.id, {
-        last_success_at: observedAt,
-        consecutive_failures: 0,
-        pause_reason: null,
-        next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
-      });
-      return { state };
     }
+    return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath, now });
+  }
 
+  let previous;
+  state = "db_error";
+  try {
+    previous = await db.getLastSuccessfulFetch(source.id);
+  } catch (error) {
+    return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath, now });
+  }
+
+  if (previous?.content_hash === hash) {
+    try {
+      await db.recordFetch(fetchRow({
+        source, fetchId, observedAt, fetchResult, hash, extractionVersion,
+        state: "unchanged", error: null, snapshotObjectPath: null,
+      }));
+    } catch (error) {
+      return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state: "db_error", error, snapshotObjectPath, now });
+    }
+    const warning = await updateSourceSuccess(db, source, observedAt, now);
+    return { state: "unchanged", ...(warning ? { warning } : {}) };
+  }
+
+  state = "storage_error";
+  try {
     snapshotObjectPath = snapshotPath(source.id, fetchId, now, fetchResult.contentType);
     await storage.upload(snapshotObjectPath, fetchResult.body, { contentType: fetchResult.contentType ?? "text/html" });
-    state = "success";
-    await db.recordFetch({
-      id: fetchId,
-      source_id: source.id,
-      fetched_at: observedAt,
-      final_url: fetchResult.finalUrl || source.url,
-      http_status: fetchResult.status,
-      content_hash: hash,
-      extraction_version: extractionVersion,
-      duration_ms: fetchResult.durationMs ?? null,
-      state,
-      error_class: null,
-      error_message: null,
-      snapshot_object_path: snapshotObjectPath,
-      response_byte_size: fetchResult.byteSize ?? null,
-      content_type: fetchResult.contentType ?? null,
-    });
-
-    const observations = extractObservations(source, extracted, {
-      id: fetchId,
-      finalUrl: fetchResult.finalUrl || source.url,
-      contentHash: hash,
-      observedAt,
-    });
-    await db.recordObservations(observations);
-    await db.updateSource(source.id, {
-      last_success_at: observedAt,
-      consecutive_failures: 0,
-      pause_reason: null,
-      next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
-    });
-    return { state, observationCount: observations.length };
   } catch (error) {
-    const failures = Number(source?.consecutive_failures ?? 0) + 1;
-    const pause = failures >= 10;
-    await db.recordFetch({
-      id: fetchId,
-      source_id: source.id,
-      fetched_at: observedAt,
-      final_url: fetchResult?.finalUrl || source.url,
-      http_status: fetchResult?.status ?? null,
-      content_hash: hash,
-      extraction_version: extractionVersion,
-      duration_ms: fetchResult?.durationMs ?? null,
-      state,
-      error_class: error?.name ?? "Error",
-      error_message: error instanceof Error ? error.message : String(error),
-      snapshot_object_path: snapshotObjectPath,
-      response_byte_size: fetchResult?.byteSize ?? null,
-      content_type: fetchResult?.contentType ?? null,
-    });
-    await db.updateSource(source.id, {
-      last_failure_at: observedAt,
-      consecutive_failures: failures,
-      ...(pause ? { enabled: false, pause_reason: "Paused after 10 consecutive scheduled-run failures" } : {}),
-      next_due_at: nextDueAt(source.refresh_class ?? "daily", now),
-    });
-    return { state: "failed", error: error instanceof Error ? error.message : String(error) };
+    return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath: null, now });
   }
+
+  state = "db_error";
+  try {
+    await db.recordFetch(fetchRow({
+      source, fetchId, observedAt, fetchResult, hash, extractionVersion,
+      state: "success", error: null, snapshotObjectPath,
+    }));
+  } catch (error) {
+    return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath, now });
+  }
+
+  const observations = extractObservations(source, extracted, {
+    id: fetchId,
+    finalUrl: fetchResult.finalUrl || source.url,
+    contentHash: hash,
+    observedAt,
+  });
+
+  try {
+    await db.recordObservations(observations);
+  } catch (error) {
+    return recordFailure({ source, db, fetchId, observedAt, fetchResult, hash, extractionVersion, state, error, snapshotObjectPath, now });
+  }
+
+  const warning = await updateSourceSuccess(db, source, observedAt, now);
+  return { state: "success", observationCount: observations.length, ...(warning ? { warning } : {}) };
 }
 
-export async function runIngestionBatch({ sources, db, storage, fetchSourceImpl = fetchSource, now = new Date(), concurrency = 20 }) {
+export async function runIngestionBatch({
+  sources,
+  db,
+  storage,
+  fetchSourceImpl = fetchSource,
+  extractContentImpl = extractContent,
+  now = new Date(),
+  concurrency = 20,
+}) {
   if (!Array.isArray(sources)) throw new Error("sources must be an array");
   const workerCount = Math.max(1, Math.min(20, Number(concurrency) || 1, Math.max(1, sources.length)));
   let cursor = 0;
@@ -136,7 +195,15 @@ export async function runIngestionBatch({ sources, db, storage, fetchSourceImpl 
       const index = cursor;
       cursor += 1;
       if (index >= sources.length) return;
-      results[index] = await processSource({ source: sources[index], db, storage, fetchSourceImpl, now });
+      try {
+        results[index] = await processSource({ source: sources[index], db, storage, fetchSourceImpl, extractContentImpl, now });
+      } catch (error) {
+        results[index] = {
+          state: "failed",
+          failureState: "db_error",
+          error: error instanceof Error ? error.message : String(error),
+        };
+      }
     }
   }
 
@@ -166,7 +233,7 @@ function createSupabaseAdapters(supabase) {
         return data;
       },
       async recordFetch(row) {
-        const { error } = await supabase.from("intel_source_fetches").insert(row);
+        const { error } = await supabase.from("intel_source_fetches").upsert(row, { onConflict: "id" });
         if (error) throw error;
         return row;
       },
