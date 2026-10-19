@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../../components/PublicTopbar";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { checkoutLinks } from "../../../lib/monetization";
@@ -13,10 +14,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav><Link href="/database">Database</Link><Link href="/changes">Changes</Link><Link href="/vendors">Companies</Link><Link href="/pricing">Pricing</Link></nav>
-      </header>
+      </PublicTopbar>
 
       <section className="commerceHero projectDetailHero">
         <span className="kicker">{project.stage}</span>

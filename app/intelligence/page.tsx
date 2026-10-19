@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../components/PublicTopbar";
 import Link from "next/link";
 import projects from "../../data/projects.json";
 import graph from "../../data/project-graph.json";
@@ -14,7 +15,7 @@ export default function IntelligencePage() {
   const capacityLabel = knownCapacityMw >= 1000 ? `${(knownCapacityMw / 1000).toFixed(1)} GW` : `${knownCapacityMw} MW`;
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
@@ -22,7 +23,7 @@ export default function IntelligencePage() {
           <Link href="/vendors">Companies</Link>
           <Link href="/pricing">Pricing</Link>
         </nav>
-      </header>
+      </PublicTopbar>
 
       <section className="commerceHero intelligenceOfferHero">
         <span className="kicker">DATACENTER INTELLIGENCE</span>

@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../components/PublicTopbar";
 import Link from "next/link";
 import { SponsoredSlot } from "../components/SponsoredSlot";
 import { formatCapacity, getProjects } from "../lib/intelligence";
@@ -9,7 +10,7 @@ export default async function Home() {
 
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
@@ -20,7 +21,7 @@ export default async function Home() {
           <Link href="/jobs">Jobs</Link>
           <Link href="/opportunities">Opportunities</Link>
         </nav>
-      </header>
+      </PublicTopbar>
 
       <section className="hero databaseFrontHero">
         <div className="eyebrow">DATA CENTER PROJECT & POWER DATABASE</div>

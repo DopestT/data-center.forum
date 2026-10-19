@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../../../components/PublicTopbar";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -29,10 +30,10 @@ export default async function MarketPage({ params }: { params: Promise<{ slug: s
 
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav><Link href="/database">Database</Link><Link href="/database/companies">Operators</Link><Link href="/database/markets">Markets</Link><Link href="/intelligence">Data</Link></nav>
-      </header>
+      </PublicTopbar>
       <section className="commerceHero">
         <span className="kicker">MARKET INTELLIGENCE</span>
         <h1>{market.name} data-center projects.</h1>

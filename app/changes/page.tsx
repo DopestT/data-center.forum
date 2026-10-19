@@ -1,3 +1,4 @@
+import { PublicTopbar } from "../../components/PublicTopbar";
 import Link from "next/link";
 import { checkoutLinks } from "../../lib/monetization";
 import { formatVerified } from "../../lib/intelligence";
@@ -8,7 +9,7 @@ export default async function ChangesPage() {
 
   return (
     <main>
-      <header className="topbar">
+      <PublicTopbar>
         <Link className="brand" href="/">DataCenter<span>.forum</span></Link>
         <nav>
           <Link href="/database">Database</Link>
@@ -17,7 +18,7 @@ export default async function ChangesPage() {
           <Link href="/database/markets">Markets</Link>
           <Link href="/pricing">Pricing</Link>
         </nav>
-      </header>
+      </PublicTopbar>
 
       <section className="commerceHero">
         <span className="kicker">VERIFIED CHANGES</span>

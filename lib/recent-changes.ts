@@ -1,7 +1,13 @@
-import { getProjects } from "./intelligence";
-import { getProjectGraph, type ProjectEvent } from "./intelligence-graph";
+import { getVerifiedIntelligenceEvents } from "./intelligence-events";
 
-export type RecentChange = ProjectEvent & {
+export type RecentChange = {
+  date: string;
+  type: string;
+  headline: string;
+  summary: string;
+  materiality: "critical" | "high" | "medium" | "low";
+  sourceName: string;
+  sourceUrl: string;
   projectSlug: string;
   projectName: string;
   company: string;
@@ -12,27 +18,21 @@ export type RecentChange = ProjectEvent & {
 };
 
 export async function getRecentChanges(limit = 30): Promise<RecentChange[]> {
-  const projects = await getProjects();
-  const projectGraphs = await Promise.all(
-    projects.map(async (project) => ({
-      project,
-      graph: await getProjectGraph(project.slug)
-    }))
-  );
-
-  return projectGraphs
-    .flatMap(({ project, graph }) =>
-      graph.events.map((event) => ({
-        ...event,
-        projectSlug: project.slug,
-        projectName: project.name,
-        company: project.company,
-        region: project.region,
-        stage: project.stage,
-        lastVerifiedAt: project.last_verified_at,
-        verificationStatus: "verified" as const
-      }))
-    )
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, Math.max(0, limit));
+  const events = await getVerifiedIntelligenceEvents(limit);
+  return events.map((event) => ({
+    date: event.occurredAt ?? event.publishedAt ?? event.verifiedAt,
+    type: event.eventType,
+    headline: event.headline,
+    summary: event.summary,
+    materiality: event.materiality,
+    sourceName: event.sourceName,
+    sourceUrl: event.sourceUrl,
+    projectSlug: event.projectSlug ?? "",
+    projectName: event.projectName ?? "Data center intelligence",
+    company: event.company ?? "Verified source",
+    region: event.region ?? event.market ?? "",
+    stage: "",
+    lastVerifiedAt: event.verifiedAt,
+    verificationStatus: "verified" as const,
+  }));
 }
