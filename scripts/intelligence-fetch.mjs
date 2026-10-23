@@ -37,8 +37,21 @@ export function isUnsafeAddress(address) {
     ].some(([base, bits]) => ipv4InRange(address, base, bits));
   }
   if (family === 6) {
-    const normalized = address.toLowerCase();
-    return normalized === "::" || normalized === "::1" || normalized.startsWith("fc") || normalized.startsWith("fd") || /^fe[89ab]/.test(normalized);
+    // URL parsing canonicalizes expanded and dotted IPv6 spellings alike.
+    const normalized = new URL(`http://[${address}]/`).hostname.slice(1, -1);
+    const [left, right] = normalized.split("::");
+    const prefix = left ? left.split(":") : [];
+    const suffix = right ? right.split(":") : [];
+    const words = right === undefined ? prefix : [...prefix, ...Array(8 - prefix.length - suffix.length).fill("0"), ...suffix];
+    const values = words.map((word) => Number.parseInt(word, 16));
+    if (values.slice(0, 5).every((word) => word === 0) && values[5] === 0xffff) {
+      const ipv4 = [values[6] >> 8, values[6] & 255, values[7] >> 8, values[7] & 255].join(".");
+      return isUnsafeAddress(ipv4);
+    }
+    return values.slice(0, 6).every((word) => word === 0)
+      || (values[0] & 0xfe00) === 0xfc00
+      || (values[0] & 0xffc0) === 0xfe80
+      || (values[0] & 0xff00) === 0xff00;
   }
   return true;
 }
@@ -59,7 +72,7 @@ export async function assertSafeUrl(value, resolver = defaultResolver, { allowHt
   if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error(`Unsupported source protocol: ${url.protocol}`);
   if (url.username || url.password) throw new Error("Source URL credentials are not allowed");
 
-  const hostname = url.hostname.toLowerCase();
+  const hostname = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
   if (hostname === "localhost" || hostname.endsWith(".localhost")) throw new Error("Unsafe source host");
 
   const literalFamily = net.isIP(hostname);
@@ -119,14 +132,18 @@ async function readBoundedBody(response, maxBytes) {
   return { body, byteSize };
 }
 
-async function fetchWithTimeout(fetchImpl, url, timeoutMs, headers) {
+async function withDeadline(operation, timeoutMs) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let timer;
+  const deadline = new Promise((_resolve, reject) => {
+    timer = setTimeout(() => {
+      const error = new Error(`Fetch timeout after ${timeoutMs}ms`);
+      reject(error);
+      controller.abort(error);
+    }, timeoutMs);
+  });
   try {
-    return await fetchImpl(url, { signal: controller.signal, redirect: "manual", headers });
-  } catch (error) {
-    if (error?.name === "AbortError") throw new Error(`Fetch timeout after ${timeoutMs}ms`);
-    throw error;
+    return await Promise.race([operation(controller.signal), deadline]);
   } finally {
     clearTimeout(timer);
   }
@@ -152,39 +169,42 @@ export async function fetchSource(source, options = {}) {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const started = Date.now();
     try {
-      let current = await assertSafeUrl(source?.url, resolver, { allowHttp });
-      let redirects = 0;
-      let response;
+      return await withDeadline(async (signal) => {
+        let current = await assertSafeUrl(source?.url, resolver, { allowHttp });
+        let redirects = 0;
+        let response;
 
-      while (true) {
-        response = await fetchWithTimeout(fetchImpl, current.toString(), timeoutMs, headers);
-        if (!REDIRECT_STATUSES.has(response.status)) break;
-        const location = response.headers?.get?.("location");
-        if (!location) throw new Error(`Redirect ${response.status} missing location`);
-        redirects += 1;
-        if (redirects > maxRedirects) throw new Error(`Too many redirects: ${redirects}`);
-        current = await assertSafeUrl(new URL(location, current).toString(), resolver, { allowHttp });
-      }
-
-      if (!response.ok) {
-        const error = new Error(`Source returned HTTP ${response.status}`);
-        error.status = response.status;
-        if (classifyRetry(response.status) === "retryable" && attempt < maxAttempts) {
-          await sleep((250 * (2 ** (attempt - 1))) + Math.floor(jitter() * 100));
-          continue;
+        while (true) {
+          signal.throwIfAborted();
+          response = await fetchImpl(current.toString(), { signal, redirect: "manual", headers });
+          signal.throwIfAborted();
+          if (!REDIRECT_STATUSES.has(response.status)) break;
+          // Release redirect bodies before opening the next connection.
+          void response.body?.cancel?.().catch(() => {});
+          const location = response.headers?.get?.("location");
+          if (!location) throw new Error(`Redirect ${response.status} missing location`);
+          redirects += 1;
+          if (redirects > maxRedirects) throw new Error(`Too many redirects: ${redirects}`);
+          current = await assertSafeUrl(new URL(location, current).toString(), resolver, { allowHttp });
         }
-        throw error;
-      }
 
-      const { body, byteSize } = await readBoundedBody(response, maxBytes);
-      return {
-        finalUrl: current.toString(),
-        status: response.status,
-        contentType: response.headers?.get?.("content-type") ?? null,
-        byteSize,
-        body,
-        durationMs: Date.now() - started,
-      };
+        if (!response.ok) {
+          const error = new Error(`Source returned HTTP ${response.status}`);
+          error.status = response.status;
+          void response.body?.cancel?.().catch(() => {});
+          throw error;
+        }
+
+        const { body, byteSize } = await readBoundedBody(response, maxBytes);
+        return {
+          finalUrl: current.toString(),
+          status: response.status,
+          contentType: response.headers?.get?.("content-type") ?? null,
+          byteSize,
+          body,
+          durationMs: Date.now() - started,
+        };
+      }, timeoutMs);
     } catch (error) {
       lastError = error;
       if (classifyRetry(error?.status ?? error) === "retryable" && attempt < maxAttempts) {
@@ -196,3 +216,4 @@ export async function fetchSource(source, options = {}) {
   }
   throw lastError ?? new Error("Source fetch failed");
 }
+
