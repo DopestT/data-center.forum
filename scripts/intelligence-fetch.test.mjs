@@ -34,6 +34,9 @@ test("safe URL validation rejects private, metadata, loopback and unsupported ta
   await assert.rejects(() => assertSafeUrl("https://private.example/file", async () => [{ address: "10.0.0.8", family: 4 }]), /unsafe/i);
   await assert.rejects(() => assertSafeUrl("https://metadata.example/file", async () => [{ address: "169.254.169.254", family: 4 }]), /unsafe/i);
   await assert.rejects(() => assertSafeUrl("https://ipv6.example/file", async () => [{ address: "::1", family: 6 }]), /unsafe/i);
+  await assert.rejects(() => assertSafeUrl("https://mapped-loopback.example/file", async () => [{ address: "::ffff:127.0.0.1", family: 6 }]), /unsafe/i);
+  await assert.rejects(() => assertSafeUrl("https://mapped-private.example/file", async () => [{ address: "::ffff:10.0.0.8", family: 6 }]), /unsafe/i);
+  await assert.rejects(() => assertSafeUrl("https://multicast.example/file", async () => [{ address: "ff02::1", family: 6 }]), /unsafe/i);
 });
 
 test("fetcher validates every redirect before following it", async () => {
@@ -59,13 +62,42 @@ test("fetcher enforces byte cap and default is 5 MB", async () => {
   );
 });
 
-test("fetcher times out without hanging the batch", async () => {
+test("fetcher times out before response headers without hanging the batch", async () => {
   const { fetchSource } = await loadModule();
   const fetchImpl = (_url, { signal }) => new Promise((_resolve, reject) => {
     signal.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" })), { once: true });
   });
   await assert.rejects(
     () => fetchSource({ url: "https://example.com/slow" }, { resolver: publicResolver, fetchImpl, timeoutMs: 5, maxAttempts: 1 }),
+    /timeout/i
+  );
+});
+
+test("fetcher deadline remains active while the response body streams", async () => {
+  const { fetchSource } = await loadModule();
+  const fetchImpl = async (_url, { signal }) => ({
+    status: 200,
+    ok: true,
+    headers: { get: (name) => String(name).toLowerCase() === "content-type" ? "text/html" : null },
+    body: {
+      getReader() {
+        return {
+          read() {
+            return new Promise((resolve, reject) => {
+              const timer = setTimeout(() => resolve({ done: true, value: undefined }), 40);
+              signal.addEventListener("abort", () => {
+                clearTimeout(timer);
+                reject(Object.assign(new Error("aborted while streaming"), { name: "AbortError" }));
+              }, { once: true });
+            });
+          },
+          async cancel() {},
+        };
+      },
+    },
+  });
+  await assert.rejects(
+    () => fetchSource({ url: "https://example.com/slow-body" }, { resolver: publicResolver, fetchImpl, timeoutMs: 5, maxAttempts: 1 }),
     /timeout/i
   );
 });
@@ -89,3 +121,68 @@ test("retry classification and attempts match v1 policy", async () => {
   assert.equal(result.body, "done");
   assert.equal(result.status, 200);
 });
+
+test("IPv6 validation covers expanded, hexadecimal, literal and mixed DNS forms", async () => {
+  const { assertSafeUrl } = await loadModule();
+  for (const address of ["0:0:0:0:0:0:0:1", "0:0:0:0:0:ffff:7f00:1", "::ffff:a00:8", "FF02:0:0:0:0:0:0:1"]) {
+    await assert.rejects(() => assertSafeUrl("https://example.com/", async () => [{ address }]), /unsafe/i);
+    await assert.rejects(() => assertSafeUrl(`https://[${address}]/`, publicResolver), /unsafe/i);
+  }
+  await assert.rejects(() => assertSafeUrl("https://example.com/", async () => [
+    { address: "93.184.216.34" }, { address: "::ffff:10.0.0.8" },
+  ]), /unsafe/i);
+  for (const address of ["2606:4700:4700::1111", "::ffff:93.184.216.34"]) {
+    await assert.doesNotReject(() => assertSafeUrl(`https://[${address}]/`, publicResolver));
+  }
+});
+
+test("deadline bounds text bodies even when the transport ignores abort", async () => {
+  const { fetchSource } = await loadModule();
+  let signal;
+  await assert.rejects(() => fetchSource({ url: "https://example.com/" }, {
+    resolver: publicResolver, timeoutMs: 10, maxAttempts: 1,
+    fetchImpl: async (_url, options) => {
+      signal = options.signal;
+      return { ...response(200), text: () => new Promise(() => {}) };
+    },
+  }), /timeout/i);
+  assert.equal(signal.aborted, true);
+});
+
+test("body timeouts retry only up to maxAttempts", async () => {
+  const { fetchSource } = await loadModule();
+  let calls = 0;
+  const signals = [];
+  await assert.rejects(() => fetchSource({ url: "https://example.com/" }, {
+    resolver: publicResolver, timeoutMs: 10, maxAttempts: 2, sleep: async () => {}, jitter: () => 0,
+    fetchImpl: async (_url, { signal }) => {
+      calls += 1;
+      signals.push(signal);
+      return { ...response(200), text: () => new Promise(() => {}) };
+    },
+  }), /timeout/i);
+  assert.equal(calls, 2);
+  assert.ok(signals.every((signal) => signal.aborted));
+});
+
+test("redirect requests and body reads share the attempt signal", async () => {
+  const { fetchSource } = await loadModule();
+  const signals = [];
+  let cancelled = false;
+  await assert.rejects(() => fetchSource({ url: "https://example.com/start" }, {
+    resolver: publicResolver, timeoutMs: 10, maxAttempts: 1,
+    fetchImpl: async (_url, { signal }) => {
+      signals.push(signal);
+      if (signals.length === 1) return {
+        ...response(302, "", { location: "/end" }),
+        body: { async cancel() { cancelled = true; } },
+      };
+      return { ...response(200), text: () => new Promise(() => {}) };
+    },
+  }), /timeout/i);
+  assert.equal(signals.length, 2);
+  assert.equal(signals[0], signals[1]);
+  assert.equal(signals[1].aborted, true);
+  assert.equal(cancelled, true);
+});
+
